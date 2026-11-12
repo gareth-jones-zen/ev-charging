@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ev-charging"
+version = "0.1.0"
+description = "Book an office EV charging slot (a Microsoft Form) when your Outlook calendar asks for one, and put the approved charge point in your calendar."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "m365-graph>=0.1",     # sign-in and Graph requests; not on PyPI, see README
+    "win-background>=0.2",   # the scheduled task, notifications, locks and the log; not on PyPI, see README
+    "playwright>=1.44",      # drives Edge to submit the form
+]
+
+[project.scripts]
+ev-charging = "ev_charging.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
