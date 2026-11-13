@@ -24,7 +24,7 @@ from win_background import notify
 
 from . import __version__, config as cfg, form, state as state_mod
 from .outlook import client
-from .run import CalendarError, locked_run, logger, summary
+from .run import CalendarError, locked_run, logger, run_lock, summary
 
 
 def main(argv: list | None = None) -> int:
@@ -106,16 +106,46 @@ def _run(config: cfg.Config, args) -> int:
 
 def _book(config: cfg.Config, args) -> int:
     day = dt.date.fromisoformat(args.date)
-    if args.submit and day.isoformat() in state_mod.load(config.state_file) and not args.force:
-        print(f"Already requested for {day:%a %d %b}; skipping (--force to request it again).")
-        return 0
-    start = args.start or form.start_time(config, form.car(config))
-    outcome = form.book(config, day, submit=args.submit, headless=args.headless, start=start)
+    with run_lock(config):   # the same lock as a run, so the two can't request the same day at once
+        if args.submit and day.isoformat() in state_mod.load(config.state_file) and not args.force:
+            print(f"Already requested for {day:%a %d %b}; skipping (--force to request it again).")
+            return 0
+        start = args.start or form.start_time(config, form.car(config))
+        if not args.submit:
+            outcome = form.book(config, day, submit=False, headless=args.headless, start=start)
+        else:
+            outcome = _submit(config, day, start, args.headless)
+            if outcome is None:
+                return 1
     if outcome.startswith("Submitted"):
-        state_mod.record_submission(config.state_file, day, start)
         outcome += " Approval comes by email."
     print(outcome)
     return 0 if outcome.startswith(("Submitted", "Preview")) else 1
+
+
+def _submit(config: cfg.Config, day: dt.date, start: str, headless: bool) -> str | None:
+    """Record the day, then submit; take the record off again if it wasn't submitted (see state.py)."""
+    try:
+        before = state_mod.record_submission(config.state_file, day, start)
+    except OSError as error:
+        print(f"Not submitted: couldn't record it in the state file first. {error}", file=sys.stderr)
+        return None
+    try:
+        outcome = form.book(config, day, submit=True, headless=headless, start=start)
+    except BaseException:
+        _undo(config, day, before)
+        raise
+    if not outcome.startswith("Submitted"):
+        _undo(config, day, before)
+    return outcome
+
+
+def _undo(config: cfg.Config, day: dt.date, before: dict | None) -> None:
+    try:
+        state_mod.undo_submission(config.state_file, day, before)
+    except OSError as error:
+        print(f"{day:%a %d %b} is still marked as requested: the state file couldn't be updated ({error}). "
+              "The daily run won't request it; book it again with --force.", file=sys.stderr)
 
 
 def _sign_in(config: cfg.Config, graph_only: bool) -> int:

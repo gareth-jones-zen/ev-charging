@@ -2,17 +2,24 @@
 
 No network and no browser: Outlook is a fake with the same methods, and the form is a fake booker."""
 
+import argparse
+import contextlib
 import datetime as dt
+import io
 import json
 import pathlib
 import sys
 import tempfile
+import threading
 import tomllib
 import unittest
+from unittest import mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1] / "src"))
 
-from ev_charging import config as cfg, form, planner, run, state  # noqa: E402
+from ev_charging import cli, config as cfg, form, planner, run, state  # noqa: E402
+from m365_graph import SignInNeeded  # noqa: E402
+from win_background import Lock, key  # noqa: E402
 
 TODAY = dt.date(2026, 11, 12)   # a Thursday
 
@@ -308,6 +315,220 @@ class ConfigTests(Base):
         config = cfg.parse({}, self.folder / "x.toml")
         self.assertFalse(config.approvals.enabled)
         self.assertEqual(run.apply_approvals(config, FakeOutlook(), TODAY, False, self.log), [])
+
+
+class FixedBugTests(Base):
+    """Regression tests for the five bugs fixed in 0.1.1."""
+
+    outlook = RunTests.outlook
+
+    # 1. A sign-in failure while planning surfaced as "couldn't read your calendar", never "needs a sign-in".
+    def test_sign_in_needed_while_planning_is_not_a_calendar_error(self):
+        class SignedOut(FakeOutlook):
+            def work_plan(self, start, end):
+                raise SignInNeeded("No usable sign-in. At a console, run: ev-charging sign-in")
+        with self.assertRaises(SignInNeeded) as caught:
+            run.run(self.config, SignedOut(), today=TODAY, log=self.log)
+        self.assertNotIsInstance(caught.exception, run.CalendarError)
+
+    def test_scheduled_run_notifies_sign_in_needed(self):
+        class SignedOut(FakeOutlook):
+            def events(self, start, end):
+                raise SignInNeeded("No usable sign-in.")
+        notes = []
+        args = argparse.Namespace(scheduled=True, json=False, dry_run=False, hook=True, command="run")
+        with mock.patch.object(cli, "locked_run", lambda config, **k: run.run(config, SignedOut(), today=TODAY)), \
+                mock.patch.object(cli, "notify", lambda title, lines: notes.append(title)), \
+                contextlib.redirect_stderr(io.StringIO()):
+            self.assertEqual(cli._run(self.config, args), 1)
+        self.assertEqual(notes, ["ev-charging needs a sign-in"])
+
+    # 2. A state write failing after a real submit left the day unrecorded, so the next run requested it again.
+    def test_state_swap_is_retried(self):
+        real, calls = state.os.replace, []
+
+        def flaky(source, target):
+            calls.append(target)
+            if len(calls) < 3:
+                raise PermissionError(5, "Access is denied")
+            real(source, target)
+        with mock.patch.object(state.os, "replace", flaky), mock.patch.object(state.time, "sleep"):
+            state.save(self.config.state_file, {"2026-11-16": {"start": "08:00"}})
+        self.assertEqual(len(calls), 3)
+        self.assertEqual(state.load(self.config.state_file), {"2026-11-16": {"start": "08:00"}})
+
+    def test_state_swap_gives_up_after_five(self):
+        with mock.patch.object(state.os, "replace", side_effect=PermissionError(5, "Access is denied")) as replace, \
+                mock.patch.object(state.time, "sleep"):
+            with self.assertRaises(PermissionError):
+                state.save(self.config.state_file, {})
+        self.assertEqual(replace.call_count, 5)
+
+    def test_submitted_day_survives_a_state_file_that_then_fails(self):
+        self.config.approvals.enabled = False
+        broken = mock.patch.object(state.os, "replace", side_effect=PermissionError(5, "Access is denied"))
+
+        def booker(config, day):
+            # The day is already recorded before the form is submitted...
+            self.assertIn(day.isoformat(), state.load(config.state_file))
+            broken.start()   # ...so the state file failing from now on can't lose it
+            return f"Submitted: {day}"
+        with mock.patch.object(state.time, "sleep"):
+            try:
+                report = run.run(self.config, self.outlook(), today=TODAY, log=self.log, booker=booker)
+            finally:
+                broken.stop()
+        self.assertEqual(report["booked"], ["2026-11-16"])
+        self.assertIn("Tue 24 Nov: booking FAILED. Not submitted: couldn't record it in the state file first. "
+                      "PermissionError: [Errno 5] Access is denied", report["questions"])
+        self.assertEqual(list(state.load(self.config.state_file)), ["2026-11-16"])
+        again = run.run(self.config, self.outlook(), today=TODAY, log=self.log,
+                        booker=lambda c, d: "Submitted" if d.isoformat() == "2026-11-24" else self.fail("asked twice"))
+        self.assertEqual(again["booked"], ["2026-11-24"])
+
+    def test_nothing_submitted_if_the_day_cant_be_recorded_first(self):
+        self.config.approvals.enabled = False
+        with mock.patch.object(state.os, "replace", side_effect=PermissionError(5, "Access is denied")), \
+                mock.patch.object(state.time, "sleep"):
+            report = run.run(self.config, self.outlook(), today=TODAY, log=self.log,
+                             booker=lambda c, d: self.fail("submitted without a record"))
+        self.assertEqual(report["booked"], [])
+        self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
+        failed = [q for q in report["questions"] if "FAILED" in q]
+        self.assertEqual(len(failed), 2)
+        self.assertTrue(all("Not submitted" in q for q in failed))
+
+    def test_failed_submit_is_taken_off_so_the_next_run_retries(self):
+        def raising(config, day):
+            raise form.FormError("The form didn't load.")
+        report = run.run(self.config, self.outlook(messages=[]), today=TODAY, log=self.log, booker=raising)
+        self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
+        self.assertEqual(state.load(self.config.state_file), {})
+        again = run.run(self.config, self.outlook(messages=[]), today=TODAY, log=self.log,
+                        booker=lambda c, d: f"Submitted: {d}")
+        self.assertEqual(again["booked"], ["2026-11-16", "2026-11-24"])
+
+    def test_failed_submit_that_cant_be_taken_off_says_so(self):
+        self.config.approvals.enabled = False
+        broken = mock.patch.object(state.os, "replace", side_effect=PermissionError(5, "Access is denied"))
+
+        def booker(config, day):
+            broken.start()
+            return "Clicked Submit but didn't see a confirmation."
+        with mock.patch.object(state.time, "sleep"):
+            try:
+                report = run.run(self.config, self.outlook(), today=TODAY, log=self.log, booker=booker)
+            finally:
+                broken.stop()
+        first = next(q for q in report["questions"] if q.startswith("Mon 16 Nov"))
+        self.assertTrue(first.endswith("It's still marked as requested, so it won't be retried: book it by hand (--force)."))
+        self.assertIn("2026-11-16", state.load(self.config.state_file))
+
+    def test_book_submit_records_first_and_undoes_a_failure(self):
+        args = argparse.Namespace(date="2026-11-26", submit=True, start=None, headless=True, force=False)
+        seen = []
+
+        def fake(config, day, submit, headless, start):
+            seen.append(day.isoformat() in state.load(config.state_file))
+            return "Clicked Submit but didn't see a confirmation."
+        with mock.patch.object(form, "book", fake), contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli._book(self.config, args), 1)
+        self.assertEqual(seen, [True])
+        self.assertNotIn("2026-11-26", state.load(self.config.state_file))
+        with mock.patch.object(form, "book", lambda *a, **k: "Submitted: Thu 26 Nov 2026, 08:00."), \
+                contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli._book(self.config, args), 0)
+        self.assertEqual(state.load(self.config.state_file)["2026-11-26"]["start"], "08:00")
+
+    def test_book_submit_undoes_when_the_form_raises(self):
+        args = argparse.Namespace(date="2026-11-26", submit=True, start=None, headless=True, force=False)
+
+        def fake(config, day, submit, headless, start):
+            raise form.FormError("The form didn't load.")
+        with mock.patch.object(form, "book", fake):
+            with self.assertRaises(form.FormError):
+                cli._book(self.config, args)
+        self.assertNotIn("2026-11-26", state.load(self.config.state_file))
+
+    def test_book_submit_when_the_day_cant_be_recorded(self):
+        args = argparse.Namespace(date="2026-11-26", submit=True, start=None, headless=True, force=False)
+        with mock.patch.object(form, "book", lambda *a, **k: self.fail("submitted without a record")), \
+                mock.patch.object(state.os, "replace", side_effect=PermissionError(5, "Access is denied")), \
+                mock.patch.object(state.time, "sleep"), contextlib.redirect_stderr(io.StringIO()) as err:
+            self.assertEqual(cli._book(self.config, args), 1)
+        self.assertIn("Not submitted", err.getvalue())
+
+    # 3. An error part-way through the approvals dropped the approvals already read.
+    def test_approvals_read_before_an_error_are_kept(self):
+        class RenameRefused(FakeOutlook):
+            def rename(self, event_id, subject, location):
+                raise OSError("rename refused")
+        fake = RenameRefused(events=[event("2026-11-23", "Travel; EV", 7, "mon"), event("2026-11-24", "Travel; EV", 7, "tue")],
+                             messages=[reply("2026-11-20", subject="Your Electric Car Charging Request - DECLINED"),
+                                       reply("2026-11-23", point="Charger 2 (Front)"), reply("2026-11-24")])
+        questions = run.apply_approvals(self.config, fake, TODAY, dry_run=False, log=self.log)
+        self.assertEqual(questions, ["Fri 20 Nov: EV request DECLINED.",
+                                     "Couldn't read the approval emails: rename refused"])
+        saved = state.load(self.config.state_file)
+        self.assertEqual(saved["2026-11-23"]["approved"], "Charger 2 (Front)")   # read; its rename failed
+        self.assertNotIn("2026-11-24", saved)                                    # never reached
+        self.assertIn("FAILED applying approvals: rename refused", self.lines)
+
+    def test_approvals_error_in_a_dry_run_saves_nothing(self):
+        class EventsDown(FakeOutlook):
+            def events(self, start, end):
+                raise OSError("events down")
+        questions = run.apply_approvals(self.config, EventsDown(messages=[reply("2026-11-24")]), TODAY, dry_run=True,
+                                        log=self.log)
+        self.assertEqual(questions, ["Couldn't read the approval emails: events down"])
+        self.assertFalse(self.config.state_file.exists())
+
+    # 4. A car file that's a JSON list (or any non-object) crashed the whole run.
+    def test_car_file_not_an_object(self):
+        for text in ("[1, 2]", '"x"', "3", "null"):
+            self.config.car_file.write_text(text, encoding="utf-8")
+            with self.assertRaises(form.FormError) as caught:
+                form.car(self.config)
+            self.assertIn(str(self.config.car_file), str(caught.exception))
+        self.config.car_file.write_text("[1, 2]", encoding="utf-8")
+        self.config.start_time = ""   # so the car file's start_time is looked for, which is where it crashed
+        self.config.approvals.enabled = False
+
+        def booker(config, day):
+            form.car(config)   # what the real form does first
+            return "Submitted"
+        report = run.run(self.config, self.outlook(), today=TODAY, log=self.log, booker=booker)
+        self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
+        self.assertTrue(report["questions"][0].startswith(
+            f"Mon 16 Nov: booking FAILED. FormError: The car details at {self.config.car_file} aren't"))
+        self.assertEqual(state.load(self.config.state_file), {})
+
+    # 5. book --submit didn't take the run lock, so it could overlap the scheduled run.
+    def test_book_takes_the_run_lock(self):
+        held = []
+
+        def fake(config, day, submit, headless, start):
+            def probe():
+                lock = Lock(f"ev-charging-run-{key(config.path)}")
+                got = lock.acquire(0)
+                lock.release()
+                held.append(not got)
+            thread = threading.Thread(target=probe)
+            thread.start()
+            thread.join()
+            return "Submitted: Thu 26 Nov 2026, 08:00."
+        for submit in (True, False):
+            args = argparse.Namespace(date="2026-11-26", submit=submit, start=None, headless=True, force=True)
+            with mock.patch.object(form, "book", fake), contextlib.redirect_stdout(io.StringIO()):
+                cli._book(self.config, args)
+        self.assertEqual(held, [True, True])
+
+    def test_book_waits_for_a_run(self):
+        args = argparse.Namespace(date="2026-11-26", submit=True, start=None, headless=True, force=False)
+        with mock.patch.object(run, "exclusive", side_effect=TimeoutError("Another run didn't finish within 15 minutes.")), \
+                mock.patch.object(form, "book", lambda *a, **k: self.fail("booked while a run held the lock")):
+            with self.assertRaises(TimeoutError):
+                cli._book(self.config, args)
 
 
 if __name__ == "__main__":

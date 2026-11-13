@@ -53,7 +53,7 @@ ev-charging config     # create the settings file and say where it is
 {"car_make": "Make", "car_model": "Model", "car_registration": "YOUR REG", "additional_information": ""}
 ```
 
-Any key in it can be used in the form's fields. `start_time` in it is used if the settings file doesn't set one.
+Any key in it can be used in the form's fields. `start_time` in it is used if the settings file doesn't set one. It must be one object of names and values, as above: anything else (a list, say) fails the booking with an error naming the file.
 
 **3. Sign in**, once:
 
@@ -89,7 +89,7 @@ ev-charging status                       requests from today on, and whether eac
 ev-charging autostart on|off|status      the daily task
 ```
 
-`--config <file>` picks a settings file; otherwise `EV_CHARGING_CONFIG`, then `%APPDATA%\ev-charging\config.toml`. `book --submit` won't request a day twice unless you add `--force`; use it for a one-off day, or to book a day the run asked you about.
+`--config <file>` picks a settings file; otherwise `EV_CHARGING_CONFIG`, then `%APPDATA%\ev-charging\config.toml`. `book --submit` won't request a day twice unless you add `--force`; use it for a one-off day, or to book a day the run asked you about. `book` waits for a run in progress (the same lock), so the two can't request the same day at once.
 
 ## Settings
 
@@ -179,11 +179,13 @@ It runs even when there are no questions: each run's questions replace the last 
 
 ## Notifications
 
-A scheduled run notifies only when something needs you: questions, a sign-in needed, or the calendar couldn't be read. A run that books and renames without trouble is silent; `status` and the log say what it did.
+A scheduled run notifies only when something needs you: questions, a sign-in needed, or the calendar couldn't be read. If the approval emails can't all be read, the approvals read before the problem are still saved, and the problem is a question. A run that books and renames without trouble is silent; `status` and the log say what it did.
 
 ## Where things are
 
 - **State** (`state_file`): each requested day, when it was submitted and the charge point once approved. It's what stops a day being requested twice.
+  - **A day is recorded just before its request is submitted**, and taken off again if the submission fails. So a state file that can't be written after a submission (a scanner or OneDrive holding it) can't lead to the day being requested again; if it can't be written beforehand, nothing is submitted and the run asks you. Writes are retried for a couple of seconds first.
+  - If a failed submission can't be taken off again, the day stays marked as requested and the question says so: book it with `book --submit --force`.
 - **Log** (`log_file`): every decision, booking and rename.
 - **Screenshots** (`screenshots`): the form as filled in, for each preview and submission, and after a Submit that didn't confirm.
 

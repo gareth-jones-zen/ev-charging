@@ -11,7 +11,8 @@ hook, so another system can queue them too:
 The hook runs after every run that isn't a dry run, questions or not: each run's questions replace the
 last run's, so an empty list means the earlier ones are settled. It runs from the settings file's folder.
 
-Nothing is ever cancelled.
+Nothing is ever cancelled, and no day is ever requested twice: the day is recorded in the state file
+*before* its request is submitted (see state.py), and taken off again only if the request wasn't sent.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ import datetime as dt
 import json
 import subprocess
 
+from m365_graph import SignInNeeded
 from win_background import NO_WINDOW, exclusive, key
 from win_background import logger as background_logger
 
@@ -30,6 +32,11 @@ from .outlook import Outlook, client
 
 class CalendarError(RuntimeError):
     """The work plan or calendar couldn't be read, so nothing was decided."""
+
+
+def run_lock(config: Config):
+    """One run (or `book`) at a time per settings file: two at once could request the same day twice."""
+    return exclusive(f"ev-charging-run-{key(config.path)}", 900, LOCAL, what=f"run for {config.path}")
 
 
 def logger(config: Config, echo: bool = True):
@@ -48,6 +55,7 @@ def apply_approvals(config: Config, outlook, today: dt.date, dry_run: bool, log=
         return []
     state = state_mod.load(config.state_file)   # re-read: a booking just now adds to it
     questions = []
+    problem = None
     try:
         messages = outlook.messages_from(rules.sender, today - dt.timedelta(days=rules.look_back_days))
         for day, reply in sorted(planner.latest_replies(config, messages, today).items()):
@@ -72,9 +80,12 @@ def apply_approvals(config: Config, outlook, today: dt.date, dry_run: bool, log=
             outlook.rename(event["id"], subject, reply["point"] if rules.set_location else None)
             log(f"updated {label} {config.label} -> {subject}")
     except Exception as error:
+        # Keep what was read before it failed (an approval recorded is never lost), and say so.
         log(f"FAILED applying approvals: {error}")
-        return [f"Couldn't read the approval emails: {str(error)[:120]}"]
-    if rules.chase_next_working_day:
+        problem = f"Couldn't read the approval emails: {str(error)[:120]}"
+    if problem:
+        questions.append(problem)
+    elif rules.chase_next_working_day:
         nearest = planner.next_working_day(today)
         entry = state.get(nearest.isoformat())
         if entry and not entry.get("approved"):
@@ -89,6 +100,8 @@ def plan(config: Config, outlook, today: dt.date) -> list:
     try:
         work_plan = planner.work_plan_days(outlook.work_plan(start, end)) if config.work_plan else {}
         entries = planner.entry_days(config, outlook.events(start, end))
+    except SignInNeeded:
+        raise   # not a calendar problem: a scheduled run notifies "needs a sign-in", which says what to do
     except Exception as error:
         raise CalendarError(f"Couldn't read the work plan or calendar: {error}") from error
     return planner.decide(config, today, work_plan, entries, state_mod.load(config.state_file))
@@ -118,18 +131,33 @@ def run(config: Config, outlook=None, today: dt.date | None = None, dry_run: boo
 
 def _book(config: Config, day: dt.date, report: dict, headless: bool, log, booker) -> None:
     start = form.start_time(config, _car(config))
+    label = planner.label(day)
+    try:
+        before = state_mod.record_submission(config.state_file, day, start)   # first, so it's never sent twice
+    except Exception as error:
+        outcome = f"Not submitted: couldn't record it in the state file first. {type(error).__name__}: {error}"
+        log(f"book {label}: {outcome}")
+        report["failed"].append(day.isoformat())
+        report["questions"].append(f"{label}: booking FAILED. {outcome[:120]}")
+        return
     try:
         outcome = (booker or (lambda c, d: form.book(c, d, submit=True, headless=headless, start=start, log=log)))(
             config, day)
     except Exception as error:
         outcome = f"{type(error).__name__}: {error}"
-    log(f"book {planner.label(day)}: {outcome}")
+    log(f"book {label}: {outcome}")
     if outcome.startswith("Submitted"):
-        state_mod.record_submission(config.state_file, day, start)
         report["booked"].append(day.isoformat())
-    else:
-        report["failed"].append(day.isoformat())
-        report["questions"].append(f"{planner.label(day)}: booking FAILED. {outcome[:120]}")
+        return
+    report["failed"].append(day.isoformat())
+    question = f"{label}: booking FAILED. {outcome[:120]}"
+    try:
+        state_mod.undo_submission(config.state_file, day, before)
+    except Exception as error:
+        log(f"book {label}: couldn't take it off the state file ({type(error).__name__}: {error}), so it stays "
+            "marked as requested and won't be tried again by itself")
+        question += " It's still marked as requested, so it won't be retried: book it by hand (--force)."
+    report["questions"].append(question)
 
 
 def _car(config: Config) -> dict:
@@ -159,7 +187,7 @@ def locked_run(config: Config, dry_run: bool = False, hook: bool = False, intera
                headless: bool = True, approvals_only: bool = False, log=print, outlook=None, booker=None,
                today: dt.date | None = None) -> dict:
     """One run at a time per settings file: two at once could request the same day twice."""
-    with exclusive(f"ev-charging-run-{key(config.path)}", 900, LOCAL, what=f"run for {config.path}"):
+    with run_lock(config):
         report = run(config, outlook or Outlook(config, client(config, interactive)), today=today, dry_run=dry_run,
                      headless=headless, approvals_only=approvals_only, log=log, booker=booker)
     if hook and not dry_run and not approvals_only and config.after_run:

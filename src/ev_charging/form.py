@@ -35,7 +35,10 @@ def car(config: Config) -> dict:
     if not path.exists():
         raise FormError(f"No car details at {path}. See the README: they live in a file of their own.")
     text = path.read_text(encoding="utf-8")
-    return tomllib.loads(text) if path.suffix.lower() == ".toml" else json.loads(text)
+    details = tomllib.loads(text) if path.suffix.lower() == ".toml" else json.loads(text)
+    if not isinstance(details, dict):   # a list, say: it has no names to fill the form from
+        raise FormError(f"The car details at {path} aren't a JSON object of names and values.")
+    return details
 
 
 def start_time(config: Config, details: dict | None = None) -> str:
