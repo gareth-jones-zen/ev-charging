@@ -1,0 +1,44 @@
+name: build
+
+on:
+  push:
+    branches: [dotnet, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      # The shared libraries are a sibling checkout (background-tools-lib, public), as on the laptop.
+      - uses: actions/checkout@v5
+        with:
+          path: ev-charging
+      - uses: actions/checkout@v5
+        with:
+          repository: gareth-jones-zen/background-tools-lib
+          path: background-tools-lib
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: ev-charging/global.json
+      # The tests include the form filled in a real headless Edge, against the local mock only.
+      - name: Build and test
+        working-directory: ev-charging
+        run: dotnet test -c Release
+      - name: Publish (Native AOT)
+        working-directory: ev-charging
+        run: |
+          dotnet publish src/EvCharging.Console -c Release -r win-x64 -o out
+          dotnet publish src/EvCharging.Background -c Release -r win-x64 -o out
+          dotnet publish tests/Parity -c Release -r win-x64 -o parity-out
+          parity-out/ev-charging-parity.exe scenarios tests/parity/golden/scenarios.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          parity-out/ev-charging-parity.exe misc tests/parity/golden/misc.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          parity-out/ev-charging-parity.exe cli tests/parity/golden/cli.json
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          Get-ChildItem out/*.exe | Format-Table Name, Length
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ev-charging-win-x64
+          path: ev-charging/out/*.exe

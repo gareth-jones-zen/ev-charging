@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mock EV Charging Point booking</title>
+<style>
+  body { font-family: Segoe UI, sans-serif; margin: 24px; }
+  [data-automation-id='questionItem'] { margin: 18px 0; padding: 12px; border: 1px solid #ccc; width: 480px; }
+  input, textarea { width: 300px; font-size: 14px; }
+  .dropdown { display: inline-block; border: 1px solid #888; padding: 4px 10px; min-width: 120px; cursor: pointer; }
+  .listbox { border: 1px solid #888; width: 140px; }
+  .listbox [role='option'] { padding: 4px 10px; cursor: pointer; }
+  #picker { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.1); display: none; }
+  #picker .calendar { position: absolute; top: 80px; left: 40px; background: #fff; border: 1px solid #333; padding: 20px; }
+  #thanks { display: none; font-size: 18px; }
+</style>
+</head>
+<body>
+<!-- A local mock shaped like a Microsoft Form, for the DevTools form-filling tests. It is never the real form.
+     The quirks it reproduces:
+     - fields hold a saved draft (Forms keeps one per user), so the dropdown shows its last answer, not a placeholder;
+     - the date box opens a picker that swallows the next click unless Escape closes it;
+     - the page's model updates only from trusted input events, as a React form's does, so setting .value from a
+       script would leave it unchanged;
+     - Submit shows a confirmation with what was submitted. -->
+<form id="form" onsubmit="return false">
+  <div data-automation-id="questionItem"><div>1. Date</div><input id="q1" type="text" placeholder="Please input date (dd/MM/yyyy)" value="01/01/2026"></div>
+  <div data-automation-id="questionItem"><div>2. Start time</div>
+    <div class="dropdown" id="q2" role="button" aria-expanded="false" aria-haspopup="listbox">07:30</div>
+    <div class="listbox" id="q2list" role="listbox" hidden>
+      <div role="option">07:00</div><div role="option">07:30</div><div role="option">08:00</div><div role="option">08:30</div>
+    </div>
+  </div>
+  <div data-automation-id="questionItem"><div>3. Car make</div><input id="q3" type="text" value="Old make"></div>
+  <div data-automation-id="questionItem"><div>4. Car model</div><input id="q4" type="text"></div>
+  <div data-automation-id="questionItem"><div>5. Registration</div><input id="q5" type="text"></div>
+  <div data-automation-id="questionItem"><div>6. Anything else</div><textarea id="q6"></textarea></div>
+  <button type="button" id="submit">Submit</button>
+</form>
+<div id="picker"><div class="calendar">A date picker (it swallows the next click)</div></div>
+<div id="thanks"></div>
+<script>
+  const model = { q1: '01/01/2026', q2: '07:30', q3: 'Old make', q4: '', q5: '', q6: '' };
+  const log = [];
+  for (const id of ['q1', 'q3', 'q4', 'q5', 'q6']) {
+    document.getElementById(id).addEventListener('input', e => {
+      if (e.isTrusted) model[id] = e.target.value; else log.push('untrusted input on ' + id);
+    });
+  }
+  const picker = document.getElementById('picker');
+  document.getElementById('q1').addEventListener('click', () => { picker.style.display = 'block'; });
+  picker.addEventListener('mousedown', e => { e.preventDefault(); e.stopPropagation(); log.push('picker swallowed a click'); picker.style.display = 'none'; }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') picker.style.display = 'none'; });
+  const dropdown = document.getElementById('q2');
+  const list = document.getElementById('q2list');
+  dropdown.addEventListener('click', () => {
+    const open = dropdown.getAttribute('aria-expanded') !== 'true';
+    dropdown.setAttribute('aria-expanded', open ? 'true' : 'false');
+    list.hidden = !open;
+  });
+  for (const option of list.querySelectorAll("[role='option']")) {
+    option.addEventListener('click', () => {
+      model.q2 = option.textContent; dropdown.textContent = option.textContent;
+      dropdown.setAttribute('aria-expanded', 'false'); list.hidden = true;
+    });
+  }
+  document.getElementById('submit').addEventListener('click', e => {
+    if (!e.isTrusted) { log.push('untrusted submit'); return; }
+    document.getElementById('form').style.display = 'none';
+    const thanks = document.getElementById('thanks');
+    thanks.style.display = 'block';
+    thanks.textContent = 'Your response was submitted. ' + JSON.stringify({ model, log });
+  });
+</script>
+</body>
+</html>

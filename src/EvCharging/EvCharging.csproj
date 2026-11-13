@@ -8,6 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="EvCharging.Tests" />
-    <InternalsVisibleTo Include="Parity" />
+    <InternalsVisibleTo Include="ev-charging-parity" />
   </ItemGroup>
 </Project>

@@ -76,6 +76,10 @@ public sealed class FormPage
 
     public async Task<string> UrlAsync() => (await Eval("location.href").ConfigureAwait(false)).GetString() ?? "";
 
+    /// <summary>The page's visible text.</summary>
+    public async Task<string> TextAsync() =>
+        (await Eval("(document.body && document.body.innerText) || ''").ConfigureAwait(false)).GetString() ?? "";
+
     public Task WaitAsync(int milliseconds) => Task.Delay(milliseconds);
 
     public async Task<int> CountAsync(string selector) =>

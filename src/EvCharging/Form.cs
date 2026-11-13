@@ -120,6 +120,14 @@ public static class Form
         using var profile = TakeProfile(settings.EdgeProfile, options.ProfileWait ?? ProfileWait);
         return FormPage.Run(settings.EdgeProfile, headless, options, async page =>
         {
+            var outcome = await FillAndSubmitAsync(page).ConfigureAwait(false);
+            if (options.PageText is { } seen)
+                seen(await page.TextAsync().ConfigureAwait(false));
+            return outcome;
+        });
+
+        async Task<string> FillAndSubmitAsync(FormPage page)
+        {
             await page.GoAsync(settings.Form.Url).ConfigureAwait(false);
             if (!await page.WaitForQuestionsAsync(Question, options.LoadTimeout, headless ? options.SignInAccount ?? settings.LoginHint : null, headless).ConfigureAwait(false))
                 throw new FormError("The form didn't load. Is the Microsoft sign-in still valid? Run `ev-charging sign-in` at a console.");
@@ -170,7 +178,7 @@ public static class Form
                 return $"Clicked Submit but didn't see a confirmation. Check {after}";
             }
             return $"Submitted: {PyTime.Strftime(day, "%a %d %b %Y")}, {start}.";
-        });
+        }
     }
 
     /// <summary>sign_in_window(): open the form in the tool's Edge profile, visibly, and wait (up to 5 minutes) for a
@@ -230,6 +238,9 @@ public sealed record FormOptions
     public string? EdgeExecutable { get; init; }
 
     public Action<string>? Log { get; init; }
+
+    /// <summary>Tests: the page's text once the form is done with (filled, and submitted or not).</summary>
+    public Action<string>? PageText { get; init; }
 }
 
 /// <summary>How the form's Submit button may be clicked. <b>Refuse is the default</b>: Live is only for `run` (not a
