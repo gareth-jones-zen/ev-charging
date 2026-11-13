@@ -1,6 +1,6 @@
 # Plan: ev-charging ported to .NET 11 Native AOT, with Edge over DevTools
 
-*13 Nov 2026, written before the port, overnight and unattended (branch `dotnet`; the Python is tagged `v0.1.0`).
+*13 Nov 2026, written before the port, overnight and unattended (branch `dotnet`; the Python was tagged `v0.1.0`, and the port follows its 0.1.1 fixes, 13 Nov).
 Phases 1 to 4 are done overnight; 5 to 7 wait for GJ.*
 
 ## Does this change the earlier recommendation?
@@ -100,9 +100,9 @@ The form is filled through background-tools-lib's EdgeDevTools (Edge over its De
 | 5 | **One named lock for the Edge profile, `edge-profile-<key>`**, the key computed as `EdgeProfile.Key` (win-background's `key()` of the normalised path), held only while Edge is open. It waits up to 10 minutes, then the booking fails with "profile busy"; Edge's own lock file (`EdgeProfile.IsOpen`) is a second guard. A test proves the two spellings in the tomls (`%LOCALAPPDATA%/claude-ea/m365-edge-profile` here, `~/AppData/Local/claude-ea/m365-edge-profile` in teams-transcripts) give one key | The live finding: the 08:00 run and a transcript fetch can collide on `m365-edge-profile`, and Python fails at once. Agreed with the teams-transcripts port (coordinator, 13 Nov). **The live Python tools still take no such lock: fixing them is GJ's decision** |
 | 6 | Templates: the `str.format` subset ported exactly; a strftime directive PyCompat doesn't support, or a format spec on a text value, is refused when the settings load | Rather than mean something different; GJ's settings use `%d/%m/%Y` only |
 | 7 | `[approvals]` values type-checked at load | Python takes them untyped and fails mid-run |
-| 8 | `book --submit` doesn't take the run lock, as in Python | Parity; noted for GJ |
+| 8 | ~~`book --submit` doesn't take the run lock, as in Python~~ **Superseded (13 Nov):** `book` takes the run lock, as Python 0.1.1 does | GJ approved the fix |
 | 9 | Help text is Python's, captured at 80 columns | argparse output is static |
-| 10 | Sibling-checkout references to background-tools-lib; x64 only; the Python stays on `main` at `v0.1.0` | As the other ports |
+| 10 | Sibling-checkout references to background-tools-lib; x64 only; the Python stays on `main` (0.1.1 since 13 Nov) | As the other ports |
 
 ## Risks
 
@@ -110,7 +110,7 @@ The form is filled through background-tools-lib's EdgeDevTools (Edge over its De
   mechanics (typing that a React-style form accepts, the picker quirk, the dropdown by role, the strict matches),
   not Microsoft's current page.
 - **A real submission is a request to Facilities**: it is never made overnight, and phase 5 is GJ's.
-- **Python drift:** the goldens record v0.1.0; regenerate them if the Python changes.
+- **Python drift:** the goldens record 0.1.1 (regenerated 13 Nov, after the five fixes); regenerate them if the Python changes.
 
 ## Status (13 Nov 2026, morning): phases 1 to 4 done, live check pending
 
@@ -147,20 +147,32 @@ Resumed at 07:25 after a Windows Update restart killed the first agent at 02:27 
 | 2 | Headless, a Microsoft page needing a person waits 5 minutes | Stops at once with a FormError (decision 4) |
 | 3 | No profile lock: a run and a transcript fetch can collide | `edge-profile-{key}`, waits up to 10 minutes (decision 5) |
 | 4 | An option not in the list: Playwright's TimeoutError after 30 s (a traceback from `book`) | A FormError naming the option; two matches is a FormError (Playwright's strict mode) |
-| 5 | A car file that isn't a JSON object fails later (AttributeError, escaping the run) | A FormError when it's read, so the booking fails and is raised as a question |
+| 5 | ~~A car file that isn't a JSON object fails later~~ | **No longer a difference:** Python 0.1.1 raises the same FormError, with the same message |
 | 6 | A car file's non-text `start_time` is stored as it is | Stored as Python prints it (text) |
 | 7 | `book` takes any `date.fromisoformat` form | `YYYY-MM-DD` only |
 | 8 | Anything unexpected: a traceback, exit 1 | `Type: message`, exit 1 |
 | 9 | Templates and `[approvals]` types fail mid-run | Refused when the settings load (decisions 6 and 7) |
-| 10 | The state file's swap (`os.replace`) fails at once on a transient access denied | Retried up to 5 times; the bytes written are the same |
+| 10 | ~~The state file's swap fails at once on a transient access denied~~ | **No longer a difference:** Python 0.1.1 retries it too (5 tries, 0.2 s × attempt) |
 
-### Python bugs found (carried for parity, GJ's to fix)
+### Python bugs found: fixed in 0.1.1 (13 Nov 2026, GJ approved), and the port follows
 
-- **A sign-in failure during planning is reported as "couldn't read your calendar"**, never "needs a sign-in":
-  `plan()` wraps every exception in CalendarError, so `_run`'s SignInNeeded branch is unreachable for it.
-- **`record_submission` is outside `_book`'s try.** If the state file can't be replaced after a request was
-  submitted (seen as a transient PermissionError from `os.replace`, 2 in 10,000 oracle runs, most likely antivirus
-  on the temp file), the run fails and the day isn't recorded, so the next run requests it again.
-- **`apply_approvals` returns early on any error**, so approvals already read in that run aren't saved (renames
-  already made stay).
-- **A car file that's a JSON list** crashes the whole run (AttributeError in `start_time`, outside the try).
+All five were fixed in the Python (`ev-charging` 0.1.1, `d9fe571` on `main`) and the same fixes made here, so parity
+holds with the fixed Python.
+
+| # | Bug (0.1.0) | Fix (both) |
+|---|---|---|
+| 1 | A sign-in failure during planning was wrapped as CalendarError, so "needs a sign-in" never showed | `plan()` lets SignInNeeded through; a scheduled run notifies "ev-charging needs a sign-in" |
+| 2 | `record_submission` sat outside `_book`'s try: a transient `os.replace` failure after a real submit left the day unrecorded, so the next run requested it again | **The day is recorded before the form is submitted**, and taken off again only if it wasn't sent. If the record can't be written, nothing is submitted (a failed booking and a question). If a failed submit can't be taken off, the day stays marked (never retried by itself) and the question says so. The swap is retried 5 times. `book --submit` does the same |
+| 3 | `apply_approvals` returned early on any error, dropping approvals already read | Saves what was read (not on a dry run), keeps the questions found so far, then the error question |
+| 4 | A car file that's a JSON list (any non-object) crashed the run | A FormError naming the file, so the booking fails and is raised as a question |
+| 5 | `book --submit` didn't take the run lock | `book` (preview too) takes the run lock |
+
+**Goldens regenerated for it** (`tests/parity/golden/scenarios.json`, same seed 1 and 400 scenarios): **15 of the
+400 changed only because they encoded the old behaviour**, all in the state file's bytes: 13 where an approvals error
+now saves the state (`messages`, `events`, `events_later` failures; s8, s85, s104, s135, s138, s153, s195, s273, s291,
+s347, s352, s366, s384), and 2 where a failed booking's record-then-undo now rewrites the file (s10 reformatted, s345
+written as `{}`; no `[approvals]` in either, so nothing else had written it). The oracle also gained, from its own
+random stream so the other scenarios are untouched, **a sign-in needed on every Graph read** (`fail.sign_in`, 18
+scenarios) and **car files that aren't objects** (`[1, 2]`, `"x"`, `null`, `3`; 21 scenarios), 36 scenarios in all
+(3 have both).
+`misc.json` and `cli.json` are unchanged apart from `--version` (0.1.1).

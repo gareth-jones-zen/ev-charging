@@ -1,6 +1,6 @@
 """The Python ev-charging as an oracle for the .NET port.
 
-Run against this clone's copy of the Python (src/ev_charging, v0.1.0), never the live checkout, with
+Run against this clone's copy of the Python (src/ev_charging, v0.1.1), never the live checkout, with
 PYTHONDONTWRITEBYTECODE=1 so nothing is written beside the source:
 
     python tests/parity/oracle.py scenarios <count> <seed> <out.json>   # generated scenarios and what Python did
@@ -27,6 +27,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "src"))
 
 from ev_charging import cli, config as cfg, form, outlook as outlook_mod, planner, run, state  # noqa: E402
+from m365_graph import SignInNeeded  # noqa: E402
 
 # ---- fakes ----------------------------------------------------------------------------------------------------
 
@@ -45,8 +46,14 @@ class FakeOutlook:
         self.renamed: list = []
         self.event_calls = 0
 
+    def signed_out(self):
+        """fail["sign_in"]: every Graph read finds no usable sign-in, as a lapsed sign-in would."""
+        if "sign_in" in self.fail:
+            raise SignInNeeded(self.fail["sign_in"])
+
     def work_plan(self, start, end):
         self.calls.append(["work_plan", start.isoformat(), end.isoformat()])
+        self.signed_out()
         if "work_plan" in self.fail:
             raise Failure(self.fail["work_plan"])
         return [s for s in self.plan if start.isoformat() <= s["start"]["dateTime"][:10] < end.isoformat()]
@@ -54,12 +61,14 @@ class FakeOutlook:
     def events(self, start, end):
         self.calls.append(["events", start.isoformat(), end.isoformat()])
         self.event_calls += 1
+        self.signed_out()
         if "events" in self.fail or ("events_later" in self.fail and self.event_calls > 1):
             raise Failure(self.fail.get("events") or self.fail["events_later"])
         return [e for e in self.calendar if start.isoformat() <= e["start"]["dateTime"][:10] < end.isoformat()]
 
     def messages_from(self, sender, since):
         self.calls.append(["messages_from", sender, since.isoformat()])
+        self.signed_out()
         if "messages" in self.fail:
             raise Failure(self.fail["messages"])
         return self.messages
@@ -301,11 +310,22 @@ def scenario(r: random.Random, index: int) -> dict:
             "approvals_call": 0.35 <= mode < 0.42}
 
 
+def extend(s: dict, x: random.Random) -> None:
+    """Cases added with the 0.1.1 fixes, from their own random stream so every other scenario stays as it was: a
+    sign-in needed (every Graph read), and a car file that's a JSON list (which crashed 0.1.0 when the settings set
+    no start_time)."""
+    if x.random() < 0.04:
+        s["fail"] = {"sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"}
+    if x.random() < 0.06:
+        s["car"] = x.choice(["[1, 2]", '"x"', "null", "3"])
+
+
 def scenarios(count: int, seed: int) -> list:
     r = random.Random(seed)
     found = []
     for index in range(count):
         s = scenario(r, index)
+        extend(s, random.Random(f"0.1.1-{seed}-{index}"))
         s["expected"] = run_scenario(s)
         found.append(s)
     return found

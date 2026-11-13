@@ -58,6 +58,7 @@ public static class Runner
         PyValueError => "ValueError",
         PyKeyError => "KeyError",
         TimeoutException => "TimeoutError",
+        M365Graph.SignInNeededException => "SignInNeeded",
         FileNotFoundException or DirectoryNotFoundException => "FileNotFoundError",
         UnauthorizedAccessException => "PermissionError",
         IOException => "OSError",
@@ -74,6 +75,7 @@ public static class Runner
             return [];
         var state = State.Load(settings.StateFile);   // re-read: a booking just now adds to it
         var questions = new List<string>();
+        string? problem = null;
         try
         {
             var messages = outlook.MessagesFrom(rules.Sender, today.AddDays(-rules.LookBackDays));
@@ -114,10 +116,13 @@ public static class Runner
         }
         catch (Exception error) when (error is not WriteRefusedException)
         {
+            // Keep what was read before it failed (an approval recorded is never lost), and say so.
             log($"FAILED applying approvals: {error.Message}");
-            return [$"Couldn't read the approval emails: {PyStr.Head(error.Message, 120)}"];
+            problem = $"Couldn't read the approval emails: {PyStr.Head(error.Message, 120)}";
         }
-        if (rules.ChaseNextWorkingDay)
+        if (problem is not null)
+            questions.Add(problem);
+        else if (rules.ChaseNextWorkingDay)
         {
             var nearest = Planner.NextWorkingDay(today);
             if (state[PyTime.Iso(nearest)] is JsonObject entry && entry.Count > 0 && !Py.Truthy(entry["approved"]))
@@ -139,7 +144,8 @@ public static class Runner
             workPlan = settings.WorkPlan.Length > 0 ? Planner.WorkPlanDays(outlook.WorkPlan(start, end)) : [];
             entries = Planner.EntryDays(settings, outlook.Events(start, end));
         }
-        catch (Exception error) when (error is not WriteRefusedException)
+        // A sign-in needed isn't a calendar problem: a scheduled run notifies "needs a sign-in", which says what to do.
+        catch (Exception error) when (error is not WriteRefusedException and not M365Graph.SignInNeededException)
         {
             throw new CalendarError($"Couldn't read the work plan or calendar: {error.Message}", error);
         }
@@ -175,26 +181,60 @@ public static class Runner
     private static void Book(Settings settings, DateOnly day, Report report, Action<string> log, Booker booker, Func<DateTime> now)
     {
         var start = Form.StartTime(settings, Car(settings));
+        var label = Planner.Label(day);
         string outcome;
+        JsonNode? before;
+        try
+        {
+            before = State.RecordSubmission(settings.StateFile, day, start, now());   // first, so it's never sent twice
+        }
+        catch (Exception error)
+        {
+            outcome = $"Not submitted: couldn't record it in the state file first. {PythonType(error)}: {error.Message}";
+            log($"book {label}: {outcome}");
+            report.Failed.Add(PyTime.Iso(day));
+            report.Questions.Add($"{label}: booking FAILED. {PyStr.Head(outcome, 120)}");
+            return;
+        }
         try
         {
             outcome = booker(settings, day);
         }
-        catch (Exception error) when (error is not WriteRefusedException)
+        catch (WriteRefusedException)
+        {
+            // A refusing door sent nothing: take the record off (if it can be), and let the refusal through as before.
+            try
+            {
+                State.UndoSubmission(settings.StateFile, day, before);
+            }
+            catch (Exception)
+            {
+            }
+            throw;
+        }
+        catch (Exception error)
         {
             outcome = $"{PythonType(error)}: {error.Message}";
         }
-        log($"book {Planner.Label(day)}: {outcome}");
+        log($"book {label}: {outcome}");
         if (outcome.StartsWith("Submitted", StringComparison.Ordinal))
         {
-            State.RecordSubmission(settings.StateFile, day, start, now());
             report.Booked.Add(PyTime.Iso(day));
+            return;
         }
-        else
+        report.Failed.Add(PyTime.Iso(day));
+        var question = $"{label}: booking FAILED. {PyStr.Head(outcome, 120)}";
+        try
         {
-            report.Failed.Add(PyTime.Iso(day));
-            report.Questions.Add($"{Planner.Label(day)}: booking FAILED. {PyStr.Head(outcome, 120)}");
+            State.UndoSubmission(settings.StateFile, day, before);
         }
+        catch (Exception error)
+        {
+            log($"book {label}: couldn't take it off the state file ({PythonType(error)}: {error.Message}), so it stays "
+                + "marked as requested and won't be tried again by itself");
+            question += " It's still marked as requested, so it won't be retried: book it by hand (--force).";
+        }
+        report.Questions.Add(question);
     }
 
     private static JsonObject Car(Settings settings)

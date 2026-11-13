@@ -46,9 +46,17 @@ public sealed class FakeOutlook : IOutlook
 
     private static JsonArray Call(params string[] parts) => new(parts.Select(p => (JsonNode)JsonValue.Create(p)).ToArray());
 
+    /// <summary>fail["sign_in"]: every Graph read finds no usable sign-in, as a lapsed sign-in would.</summary>
+    private void SignedOut()
+    {
+        if (fail.ContainsKey("sign_in"))
+            throw new M365Graph.SignInNeededException((string)fail["sign_in"]!);
+    }
+
     public List<JsonObject> WorkPlan(DateOnly start, DateOnly end)
     {
         Calls.Add((JsonNode)Call("work_plan", PyTime.Iso(start), PyTime.Iso(end)));
+        SignedOut();
         if (fail.ContainsKey("work_plan"))
             throw new Failure((string)fail["work_plan"]!);
         return plan.Where(s => Between(s, start, end)).Select(s => (JsonObject)s.DeepClone()).ToList();
@@ -58,6 +66,7 @@ public sealed class FakeOutlook : IOutlook
     {
         Calls.Add((JsonNode)Call("events", PyTime.Iso(start), PyTime.Iso(end)));
         eventCalls++;
+        SignedOut();
         if (EventsFail is not null)
             throw new Failure(EventsFail);
         if (fail.ContainsKey("events") || (fail.ContainsKey("events_later") && eventCalls > 1))
@@ -68,6 +77,7 @@ public sealed class FakeOutlook : IOutlook
     public List<JsonObject> MessagesFrom(string sender, DateOnly since)
     {
         Calls.Add((JsonNode)Call("messages_from", sender, PyTime.Iso(since)));
+        SignedOut();
         if (fail.ContainsKey("messages"))
             throw new Failure((string)fail["messages"]!);
         return messages.Select(m => (JsonObject)m.DeepClone()).ToList();

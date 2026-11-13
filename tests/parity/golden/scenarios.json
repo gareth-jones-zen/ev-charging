@@ -883,7 +883,7 @@
    }
   ],
   "state": "{\n  \"2027-02-14\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-02-05T08:00:08\",\n    \"approved\": \"EV Charging 1 (Rear CP)\"\n  },\n  \"2027-02-08\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-02-05T08:00:08\",\n    \"approved\": \"EV Charging 2 (Front CP)\"\n  }\n}",
-  "car": "not json",
+  "car": "\"x\"",
   "booker": {
    "2027-02-05": {
     "kind": "return",
@@ -4118,7 +4118,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2027-07-04\": {\"approved\": \"  Spaced (Bay 3)  \", \"start\": \"08:00\", \"submitted\": \"2027-07-05T08:00:03\"}, \"2027-07-16\": {\"approved\": \"No brackets\", \"start\": \"08:00\", \"submitted\": \"2027-07-05T08:00:08\"}, \"2027-07-17\": {\"approved\": \"Charger 2 (Front)\", \"start\": \"08:00\", \"submitted\": \"2027-07-05T08:00:03\"}, \"2027-07-21\": {\"approved\": \"  Spaced (Bay 3)  \", \"start\": \"08:00\", \"submitted\": \"2027-07-05T08:00:00\"}}",
+   "state": "{\r\n  \"2027-07-04\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-07-05T08:00:03\"\r\n  },\r\n  \"2027-07-06\": {\r\n    \"approved\": \"Charger 2 (Front)\"\r\n  },\r\n  \"2027-07-16\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-07-05T08:00:08\"\r\n  },\r\n  \"2027-07-17\": {\r\n    \"approved\": \"Charger 2 (Front)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-07-05T08:00:03\"\r\n  },\r\n  \"2027-07-21\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-07-05T08:00:00\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 5 question(s)"
   }
  },
@@ -5133,7 +5133,7 @@
     "2026-04-24",
     "2026-04-30"
    ],
-   "state": "{\"2026-04-17\": {\"approved\": \"EV Charging 2 (Front CP)\", \"start\": \"08:00\", \"submitted\": \"2026-04-16T08:00:06\"}, \"2026-04-29\": {\"approved\": \"Ünïcode (Bay)\", \"start\": \"08:00\", \"submitted\": \"2026-04-16T08:00:04\"}, \"2026-05-03\": {\"approved\": \"EV Charging 1 (Rear CP)\", \"start\": \"08:00\", \"submitted\": \"2026-04-16T08:00:06\"}, \"2026-05-04\": {\"start\": \"08:00\", \"submitted\": \"2026-04-16T08:00:01\"}}",
+   "state": "{\r\n  \"2026-04-17\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-04-16T08:00:06\"\r\n  },\r\n  \"2026-04-29\": {\r\n    \"approved\": \"\\u00dcn\\u00efcode (Bay)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-04-16T08:00:04\"\r\n  },\r\n  \"2026-05-03\": {\r\n    \"approved\": \"EV Charging 1 (Rear CP)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-04-16T08:00:06\"\r\n  },\r\n  \"2026-05-04\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-04-16T08:00:01\"\r\n  }\r\n}",
    "summary": "0 booked, 2 failed, 7 question(s)"
   }
  },
@@ -5940,7 +5940,7 @@
   ],
   "messages": [],
   "state": null,
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "[1, 2]",
   "booker": {
    "2027-11-30": {
     "kind": "return",
@@ -6795,7 +6795,7 @@
    }
   ],
   "state": null,
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "null",
   "booker": {
    "2027-07-13": {
     "kind": "return",
@@ -11368,7 +11368,7 @@
    }
   ],
   "state": null,
-  "car": "not json",
+  "car": "3",
   "booker": {
    "2026-08-21": {
     "kind": "return",
@@ -11393,53 +11393,30 @@
     "text": "Expected 6 questions, found 7. The form has changed; not filling it."
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": true,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [],
-    "decisions": [
-     {
-      "date": "2026-09-04",
-      "action": "book"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "would book Fri 04 Sep",
-    "Tue 01 Sep: EV approved (EV Charging 1 (Rear CP)) but no morning Travel block to update (not raised)"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-08-23",
      "2026-09-06"
-    ],
-    [
-     "events",
-     "2026-08-23",
-     "2026-09-06"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2026-06-23"
-    ],
-    [
-     "events",
-     "2026-09-01",
-     "2026-09-02"
     ]
    ],
    "booked_calls": [],
    "state": null,
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "summary": null
   }
  },
  {
@@ -14234,7 +14211,7 @@
    }
   ],
   "state": "{\"2026-10-07\": {\"start\": \"08:00\", \"submitted\": \"2026-09-28T08:00:01\", \"approved\": \"No brackets\"}}",
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "\"x\"",
   "booker": {
    "2026-09-29": {
     "kind": "return",
@@ -15119,7 +15096,7 @@
    }
   ],
   "state": null,
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "\"x\"",
   "booker": {
    "2027-12-14": {
     "kind": "return",
@@ -16099,45 +16076,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": true,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [
-     "Sat 11 Dec: EV request DECLINED."
-    ],
-    "decisions": [
-     {
-      "date": "2027-12-06",
-      "action": "book"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "would book Mon 06 Dec",
-    "ask: Sat 11 Dec: EV request DECLINED."
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "events",
      "2027-12-04",
      "2027-12-07"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2027-10-05"
     ]
    ],
    "booked_calls": [],
    "state": "{\n  \"2027-12-09\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-04T08:00:00\"\n  },\n  \"2027-12-22\": {\n    \"approved\": \"Ünïcode (Bay)\",\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-04T08:00:07\"\n  }\n}",
-   "summary": "0 booked, 0 failed, 1 question(s)"
+   "summary": null
   }
  },
  {
@@ -16900,7 +16862,7 @@
    }
   ],
   "state": null,
-  "car": "{\"car_make\": \"Make\"}",
+  "car": "[1, 2]",
   "booker": {
    "2026-12-02": {
     "kind": "raise",
@@ -18223,7 +18185,7 @@
    }
   ],
   "state": "{\"2027-02-22\": {\"approved\": \"EV Charging 1 (Rear CP)\", \"start\": \"08:00\", \"submitted\": \"2027-02-21T08:00:09\"}}",
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "\"x\"",
   "booker": {
    "2027-02-22": {
     "kind": "return",
@@ -24234,47 +24196,30 @@
     "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [],
-    "decisions": [
-     {
-      "date": "2026-06-25",
-      "action": "log"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "Thu 25 Jun: office day, Day block doesn't say EV: not booked"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-06-23",
      "2026-07-07"
-    ],
-    [
-     "events",
-     "2026-06-23",
-     "2026-07-07"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2026-04-24"
     ]
    ],
    "booked_calls": [],
-   "state": "{}",
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "state": null,
+   "summary": null
   }
  },
  {
@@ -37223,7 +37168,7 @@
    }
   },
   "fail": {
-   "work_plan": "network down"
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
   },
   "dry_run": false,
   "approvals_only": true,
@@ -37233,13 +37178,14 @@
     "booked": [],
     "failed": [],
     "questions": [
-     "Sat 22 May: EV request DECLINED."
+     "Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
     ],
     "decisions": []
    },
    "error": null,
    "log": [
-    "ask: Sat 22 May: EV request DECLINED."
+    "FAILED applying approvals: No usable sign-in for these scopes. At a console, run: ev-charging sign-in",
+    "ask: Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    ],
    "renamed": [],
    "calls": [
@@ -37573,7 +37519,7 @@
    }
   ],
   "state": "{\"2026-12-14\": {}, \"2026-11-29\": {\"start\": \"08:00\", \"submitted\": \"2026-11-24T08:00:01\"}, \"2026-12-02\": {\"start\": \"08:00\", \"submitted\": \"2026-11-24T08:00:01\"}, \"2026-12-13\": {}}",
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "\"x\"",
   "booker": {
    "2026-12-10": {
     "kind": "return",
@@ -38979,57 +38925,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [],
-    "decisions": []
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "updated Tue 14 Dec Travel block -> Travel; EV – Charger 2 (Front), 07:30–08:00"
-   ],
-   "renamed": [
-    [
-     "e13",
-     "Travel; EV – Charger 2 (Front), 07:30–08:00",
-     null
-    ]
-   ],
+   "log": [],
+   "renamed": [],
    "calls": [
     [
      "work_plan",
      "2027-12-12",
      "2027-12-13"
-    ],
-    [
-     "events",
-     "2027-12-12",
-     "2027-12-13"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2027-11-10"
-    ],
-    [
-     "events",
-     "2027-12-14",
-     "2027-12-15"
-    ],
-    [
-     "rename",
-     "e13"
     ]
    ],
    "booked_calls": [],
-   "state": "{\r\n  \"2027-12-14\": {\r\n    \"approved\": \"Charger 2 (Front)\"\r\n  }\r\n}",
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "state": null,
+   "summary": null
   }
  },
  {
@@ -39476,7 +39395,7 @@
    "booked_calls": [
     "2027-07-09"
    ],
-   "state": "{\r\n  \"2027-07-09\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-07-06T08:02:31\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-07-09\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-07-06T08:02:31\"\r\n  },\r\n  \"2027-07-17\": {\r\n    \"approved\": \"\\u00dcn\\u00efcode (Bay)\"\r\n  }\r\n}",
    "summary": "1 booked, 0 failed, 3 question(s)"
   }
  },
@@ -42353,7 +42272,7 @@
    }
   },
   "fail": {
-   "work_plan": "network down"
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
   },
   "dry_run": false,
   "approvals_only": false,
@@ -42361,8 +42280,8 @@
   "expected": {
    "report": null,
    "error": {
-    "type": "CalendarError",
-    "text": "Couldn't read the work plan or calendar: network down"
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
    "log": [],
    "renamed": [],
@@ -48230,7 +48149,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": null,
+   "state": "{\r\n  \"2027-05-20\": {\r\n    \"approved\": \"Charger 2 (Front)\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 5 question(s)"
   }
  },
@@ -52216,19 +52135,22 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": true,
   "expected": {
    "report": {
     "questions": [
-     "Wed 16 Dec: EV request DECLINED.",
-     "Sun 27 Dec: EV request DECLINED."
+     "Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
     ]
    },
    "error": null,
-   "log": [],
+   "log": [
+    "FAILED applying approvals: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+   ],
    "renamed": [],
    "calls": [
     [
@@ -54354,7 +54276,7 @@
    }
   ],
   "state": "{\"2027-10-27\": {\"start\": \"08:00\", \"submitted\": \"2027-10-12T08:00:07\"}, \"2027-11-02\": {\"start\": \"08:00\", \"submitted\": \"2027-10-12T08:00:07\"}}",
-  "car": null,
+  "car": "null",
   "booker": {
    "2027-10-09": {
     "kind": "raise",
@@ -56103,7 +56025,9 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": true,
   "approvals_call": false,
@@ -56111,11 +56035,16 @@
    "report": {
     "booked": [],
     "failed": [],
-    "questions": [],
+    "questions": [
+     "Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+    ],
     "decisions": []
    },
    "error": null,
-   "log": [],
+   "log": [
+    "FAILED applying approvals: No usable sign-in for these scopes. At a console, run: ev-charging sign-in",
+    "ask: Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+   ],
    "renamed": [],
    "calls": [
     [
@@ -56126,7 +56055,7 @@
    ],
    "booked_calls": [],
    "state": "{\r\n  \"2026-06-18\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-05-28T08:00:01\"\r\n  }\r\n}",
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "summary": "0 booked, 0 failed, 1 question(s)"
   }
  },
  {
@@ -58757,50 +58686,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": true,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [
-     "Tue 10 Nov: Travel block says EV but work plan says unknown. Book EV?",
-     "Tue 17 Nov: Travel block says EV but work plan says nothing set. Book EV?"
-    ],
-    "decisions": [
-     {
-      "date": "2026-11-10",
-      "action": "ask"
-     },
-     {
-      "date": "2026-11-17",
-      "action": "ask"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "ask: Tue 10 Nov: Travel block says EV but work plan says unknown. Book EV?",
-    "ask: Tue 17 Nov: Travel block says EV but work plan says nothing set. Book EV?"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-11-04",
      "2026-11-18"
-    ],
-    [
-     "events",
-     "2026-11-04",
-     "2026-11-18"
     ]
    ],
    "booked_calls": [],
    "state": null,
-   "summary": "0 booked, 0 failed, 2 question(s)"
+   "summary": null
   }
  },
  {
@@ -62473,7 +62382,7 @@
     "2026-01-13",
     "2026-01-20"
    ],
-   "state": null,
+   "state": "{\r\n  \"2026-01-12\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\"\r\n  }\r\n}",
    "summary": "0 booked, 2 failed, 8 question(s)"
   }
  },
@@ -63788,7 +63697,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": null,
+   "state": "{}",
    "summary": null
   }
  },
@@ -70337,7 +70246,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2026-05-06\": {\"start\": \"08:00\", \"submitted\": \"2026-04-17T08:00:04\"}}",
+   "state": "{\r\n  \"2026-05-06\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-04-17T08:00:04\"\r\n  }\r\n}",
    "summary": null
   }
  },
@@ -75201,7 +75110,7 @@
    }
   ],
   "state": "{\n  \"2026-02-03\": {\n    \"approved\": \"  Spaced (Bay 3)  \",\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-01-31T08:00:04\"\n  },\n  \"2026-02-17\": {\n    \"approved\": \"Charger 2 (Front)\",\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-01-31T08:00:02\"\n  }\n}",
-  "car": "not json",
+  "car": "3",
   "booker": {
    "2026-01-29": {
     "kind": "raise",
@@ -77346,49 +77255,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [
-     "Sun 01 Feb: Travel block says EV but work plan says unknown. Book EV?"
-    ],
-    "decisions": [
-     {
-      "date": "2026-02-01",
-      "action": "ask"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "ask: Sun 01 Feb: Travel block says EV but work plan says unknown. Book EV?"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-01-24",
      "2026-02-07"
-    ],
-    [
-     "events",
-     "2026-01-24",
-     "2026-02-07"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2025-12-24"
     ]
    ],
    "booked_calls": [],
-   "state": "{}",
-   "summary": "0 booked, 0 failed, 1 question(s)"
+   "state": null,
+   "summary": null
   }
  },
  {
@@ -89904,7 +89794,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2026-12-03\": {\"approved\": \"Charger 2 (Front)\", \"start\": \"08:00\", \"submitted\": \"2026-11-29T08:00:03\"}}",
+   "state": "{\r\n  \"2026-12-03\": {\r\n    \"approved\": \"Charger 2 (Front)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2026-11-29T08:00:03\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 1 question(s)"
   }
  },
@@ -99177,7 +99067,7 @@
   ],
   "messages": [],
   "state": "{\n  \"2027-01-12\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-24T08:00:08\"\n  },\n  \"2027-01-01\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-24T08:00:01\",\n    \"approved\": \"Charger 1 (Rear)\"\n  },\n  \"2027-01-05\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-24T08:00:04\"\n  },\n  \"2026-12-30\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-24T08:00:06\"\n  }\n}",
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "\"x\"",
   "booker": {
    "2026-12-21": {
     "kind": "raise",
@@ -104059,7 +103949,7 @@
    }
   ],
   "state": "{}",
-  "car": "not json",
+  "car": "3",
   "booker": {
    "2026-01-09": {
     "kind": "return",
@@ -104074,57 +103964,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [],
-    "decisions": []
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "updated Fri 30 Jan Trajet -> Travel – EV Charging 1 (Rear CP), 08:00–12:00"
-   ],
-   "renamed": [
-    [
-     "e23",
-     "Travel – EV Charging 1 (Rear CP), 08:00–12:00",
-     "EV Charging 1 (Rear CP)"
-    ]
-   ],
+   "log": [],
+   "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-01-13",
      "2026-01-14"
-    ],
-    [
-     "events",
-     "2026-01-13",
-     "2026-01-14"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2025-12-13"
-    ],
-    [
-     "events",
-     "2026-01-30",
-     "2026-01-31"
-    ],
-    [
-     "rename",
-     "e23"
     ]
    ],
    "booked_calls": [],
-   "state": "{\r\n  \"2026-01-30\": {\r\n    \"approved\": \"EV Charging 1 (Rear CP)\"\r\n  }\r\n}",
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "state": "{}",
+   "summary": null
   }
  },
  {
@@ -105138,76 +105001,30 @@
     "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [
-     "2027-02-23"
-    ],
-    "failed": [],
-    "questions": [
-     "Wed 17 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-     "Thu 25 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-     "Mon 01 Mar: Travel block says EV but work plan says nothing set. Book EV?"
-    ],
-    "decisions": [
-     {
-      "date": "2027-02-17",
-      "action": "ask"
-     },
-     {
-      "date": "2027-02-23",
-      "action": "book"
-     },
-     {
-      "date": "2027-02-25",
-      "action": "ask"
-     },
-     {
-      "date": "2027-03-01",
-      "action": "ask"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "book Tue 23 Feb: Submitted: Tue 23 Feb 2027, 08:00.",
-    "Fri 12 Mar: EV approved (Charger 1 (Rear)) but no morning Travel block to update (not raised)",
-    "ask: Wed 17 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Thu 25 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Mon 01 Mar: Travel block says EV but work plan says nothing set. Book EV?"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2027-02-17",
      "2027-03-03"
-    ],
-    [
-     "events",
-     "2027-02-17",
-     "2027-03-03"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2027-01-18"
-    ],
-    [
-     "events",
-     "2027-03-12",
-     "2027-03-13"
     ]
    ],
-   "booked_calls": [
-    "2027-02-23"
-   ],
-   "state": "{\r\n  \"2027-02-23\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-02-17T08:03:33\"\r\n  },\r\n  \"2027-03-12\": {\r\n    \"approved\": \"Charger 1 (Rear)\"\r\n  }\r\n}",
-   "summary": "1 booked, 0 failed, 3 question(s)"
+   "booked_calls": [],
+   "state": null,
+   "summary": null
   }
  },
  {
@@ -110037,106 +109854,30 @@
     "text": "Expected 6 questions, found 7. The form has changed; not filling it."
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": true,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [
-     "Sat 07 Feb: Travel block says EV but work plan says unknown. Book EV?",
-     "Mon 09 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-     "Tue 10 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-     "Mon 16 Feb: Travel block says EV but work plan says remote, unknown. Book EV?",
-     "Tue 17 Feb: Travel block says EV but work plan says unknown. Book EV?",
-     "Thu 19 Feb: Travel block says EV but work plan says unknown. Book EV?",
-     "Sun 22 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-     "Mon 23 Feb: Travel block says EV but work plan says nothing set. Book EV?"
-    ],
-    "decisions": [
-     {
-      "date": "2026-02-05",
-      "action": "book"
-     },
-     {
-      "date": "2026-02-07",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-09",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-10",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-13",
-      "action": "book"
-     },
-     {
-      "date": "2026-02-16",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-17",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-19",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-20",
-      "action": "book"
-     },
-     {
-      "date": "2026-02-22",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-23",
-      "action": "ask"
-     },
-     {
-      "date": "2026-02-25",
-      "action": "log"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "would book Thu 05 Feb",
-    "would book Fri 13 Feb",
-    "would book Fri 20 Feb",
-    "Wed 25 Feb: EV requested, but work plan no longer says office (not raised)",
-    "ask: Sat 07 Feb: Travel block says EV but work plan says unknown. Book EV?",
-    "ask: Mon 09 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Tue 10 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Mon 16 Feb: Travel block says EV but work plan says remote, unknown. Book EV?",
-    "ask: Tue 17 Feb: Travel block says EV but work plan says unknown. Book EV?",
-    "ask: Thu 19 Feb: Travel block says EV but work plan says unknown. Book EV?",
-    "ask: Sun 22 Feb: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Mon 23 Feb: Travel block says EV but work plan says nothing set. Book EV?"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-02-05",
      "2026-02-26"
-    ],
-    [
-     "events",
-     "2026-02-05",
-     "2026-02-26"
     ]
    ],
    "booked_calls": [],
    "state": "{\"2026-02-25\": {\"start\": \"08:00\", \"submitted\": \"2026-02-04T08:00:00\"}}",
-   "summary": "0 booked, 0 failed, 8 question(s)"
+   "summary": null
   }
  },
  {
@@ -112438,7 +112179,7 @@
   ],
   "messages": [],
   "state": null,
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "\"x\"",
   "booker": {
    "2026-03-26": {
     "kind": "return",
@@ -114768,7 +114509,7 @@
    }
   ],
   "state": "{\n  \"2026-02-06\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-01-21T08:00:06\"\n  },\n  \"2026-02-08\": {\n    \"approved\": \"EV Charging 2 (Front CP)\",\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-01-21T08:00:05\"\n  }\n}",
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "3",
   "booker": {
    "2026-01-20": {
     "kind": "raise",
@@ -120897,18 +120638,22 @@
     "text": "Expected 6 questions, found 7. The form has changed; not filling it."
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": true,
   "expected": {
    "report": {
     "questions": [
-     "Mon 22 Jun: EV request DECLINED."
+     "Couldn't read the approval emails: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
     ]
    },
    "error": null,
-   "log": [],
+   "log": [
+    "FAILED applying approvals: No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+   ],
    "renamed": [],
    "calls": [
     [
@@ -122270,83 +122015,30 @@
     "text": "Preview only, nothing submitted: x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [
-     "2026-06-26",
-     "2026-07-02"
-    ],
-    "failed": [],
-    "questions": [
-     "Wed 24 Jun: Travel block says EV but work plan says nothing set. Book EV?",
-     "Thu 25 Jun: Travel block says EV but work plan says remote. Book EV?",
-     "Mon 29 Jun: Travel block says EV but work plan says timeOff, unknown. Book EV?",
-     "Fri 03 Jul: Travel block says EV but work plan says remote. Book EV?"
-    ],
-    "decisions": [
-     {
-      "date": "2026-06-24",
-      "action": "ask"
-     },
-     {
-      "date": "2026-06-25",
-      "action": "ask"
-     },
-     {
-      "date": "2026-06-26",
-      "action": "book"
-     },
-     {
-      "date": "2026-06-29",
-      "action": "ask"
-     },
-     {
-      "date": "2026-07-02",
-      "action": "book"
-     },
-     {
-      "date": "2026-07-03",
-      "action": "ask"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "book Fri 26 Jun: Submitted: Fri 26 Jun 2026, 08:00.",
-    "book Thu 02 Jul: Submitted: Thu 02 Jul 2026, 08:00.",
-    "ask: Wed 24 Jun: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Thu 25 Jun: Travel block says EV but work plan says remote. Book EV?",
-    "ask: Mon 29 Jun: Travel block says EV but work plan says timeOff, unknown. Book EV?",
-    "ask: Fri 03 Jul: Travel block says EV but work plan says remote. Book EV?"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2026-06-20",
      "2026-07-04"
-    ],
-    [
-     "events",
-     "2026-06-20",
-     "2026-07-04"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2026-05-18"
     ]
    ],
-   "booked_calls": [
-    "2026-06-26",
-    "2026-07-02"
-   ],
-   "state": "{\r\n  \"2026-06-26\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2026-06-17T08:05:32\"\r\n  },\r\n  \"2026-07-02\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2026-06-17T08:05:32\"\r\n  }\r\n}",
-   "summary": "2 booked, 0 failed, 4 question(s)"
+   "booked_calls": [],
+   "state": "{}",
+   "summary": null
   }
  },
  {
@@ -122689,7 +122381,7 @@
   ],
   "messages": [],
   "state": "{\"2027-12-02\": {\"start\": \"08:00\", \"submitted\": \"2027-11-20T08:00:02\"}, \"2027-12-07\": {\"start\": \"08:00\", \"submitted\": \"2027-11-20T08:00:03\"}, \"2027-12-11\": {\"start\": \"08:00\", \"submitted\": \"2027-11-20T08:00:06\"}, \"2027-12-08\": {\"start\": \"08:00\", \"submitted\": \"2027-11-20T08:00:00\"}}",
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "[1, 2]",
   "booker": {
    "2027-11-24": {
     "kind": "return",
@@ -124352,44 +124044,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [
-     "Sat 18 Dec: EV request DECLINED."
-    ],
-    "decisions": []
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "ask: Sat 18 Dec: EV request DECLINED."
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "work_plan",
      "2027-12-12",
      "2027-12-13"
-    ],
-    [
-     "events",
-     "2027-12-12",
-     "2027-12-13"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2027-11-12"
     ]
    ],
    "booked_calls": [],
-   "state": "{\r\n  \"2027-12-11\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-12-12T08:00:08\"\r\n  },\r\n  \"2027-12-13\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-12-12T08:00:05\"\r\n  },\r\n  \"2027-12-18\": {\r\n    \"approved\": \"Charger 1 (Rear)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-12-12T08:00:01\"\r\n  },\r\n  \"2027-12-23\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-12-12T08:00:09\"\r\n  }\r\n}",
-   "summary": "0 booked, 0 failed, 1 question(s)"
+   "state": "{\n  \"2027-12-11\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-12T08:00:08\"\n  },\n  \"2027-12-13\": {\n    \"approved\": \"No brackets\",\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-12T08:00:05\"\n  },\n  \"2027-12-18\": {\n    \"approved\": \"Charger 1 (Rear)\",\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-12T08:00:01\"\n  },\n  \"2027-12-23\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-12-12T08:00:09\"\n  }\n}",
+   "summary": null
   }
  },
  {
@@ -126766,7 +126444,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2027-02-12\": {\"start\": \"08:00\", \"submitted\": \"2027-01-31T08:00:03\"}}",
+   "state": "{\r\n  \"2027-02-12\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-31T08:00:03\"\r\n  }\r\n}",
    "summary": null
   }
  },
@@ -134649,7 +134327,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": null,
+   "state": "{\r\n  \"2027-12-30\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 1 question(s)"
   }
  },
@@ -140395,7 +140073,7 @@
    }
   ],
   "state": "{\n  \"2027-10-31\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2027-10-28T08:00:03\",\n    \"approved\": \"  Spaced (Bay 3)  \"\n  },\n  \"2027-11-21\": {}\n}",
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "[1, 2]",
   "booker": {
    "2027-11-11": {
     "kind": "return",
@@ -140490,7 +140168,7 @@
     "2027-11-08",
     "2027-11-11"
    ],
-   "state": "{\r\n  \"2027-10-31\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:00:03\"\r\n  },\r\n  \"2027-11-03\": {\r\n    \"start\": \"09:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-08\": {\r\n    \"start\": \"09:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-21\": {}\r\n}",
+   "state": "{\r\n  \"2027-10-31\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:00:03\"\r\n  },\r\n  \"2027-11-03\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-21\": {}\r\n}",
    "summary": "2 booked, 1 failed, 4 question(s)"
   }
  },
@@ -142657,7 +142335,7 @@
    }
   ],
   "state": "{\"2027-07-03\": {\"start\": \"08:00\", \"submitted\": \"2027-06-17T08:00:07\", \"approved\": \"  Spaced (Bay 3)  \"}, \"2027-07-09\": {\"start\": \"08:00\", \"submitted\": \"2027-06-17T08:00:06\"}, \"2027-06-20\": {\"start\": \"08:00\", \"submitted\": \"2027-06-17T08:00:00\", \"approved\": \"EV Charging 2 (Front CP)\"}, \"2027-06-17\": {\"start\": \"08:00\", \"submitted\": \"2027-06-17T08:00:06\"}}",
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "3",
   "booker": {
    "2027-06-19": {
     "kind": "raise",
@@ -143163,7 +142841,7 @@
    }
   ],
   "state": "{\"2026-12-24\": {\"start\": \"08:00\", \"submitted\": \"2026-12-25T08:00:08\", \"approved\": \"EV Charging 1 (Rear CP)\"}}",
-  "car": "not json",
+  "car": "\"x\"",
   "booker": {
    "2026-12-23": {
     "kind": "return",
@@ -157491,62 +157169,19 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": false,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [
-     "2027-09-01",
-     "2027-09-02",
-     "2027-09-06",
-     "2027-09-07",
-     "2027-09-09"
-    ],
-    "failed": [],
-    "questions": [],
-    "decisions": [
-     {
-      "date": "2027-08-31",
-      "action": "log"
-     },
-     {
-      "date": "2027-09-01",
-      "action": "book"
-     },
-     {
-      "date": "2027-09-02",
-      "action": "book"
-     },
-     {
-      "date": "2027-09-06",
-      "action": "book"
-     },
-     {
-      "date": "2027-09-07",
-      "action": "book"
-     },
-     {
-      "date": "2027-09-08",
-      "action": "log"
-     },
-     {
-      "date": "2027-09-09",
-      "action": "book"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "Tue 31 Aug: a day, Trajet doesn't say EV: not booked",
-    "book Wed 01 Sep: Submitted: Wed 01 Sep 2027, 08:00.",
-    "book Thu 02 Sep: Submitted: Thu 02 Sep 2027, 08:00.",
-    "book Mon 06 Sep: Submitted: Mon 06 Sep 2027, 08:00.",
-    "book Tue 07 Sep: Submitted: Tue 07 Sep 2027, 08:00.",
-    "Wed 08 Sep: a day, Trajet doesn't say EV: not booked",
-    "book Thu 09 Sep: Submitted: Thu 09 Sep 2027, 08:00."
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
@@ -157555,15 +157190,9 @@
      "2027-09-10"
     ]
    ],
-   "booked_calls": [
-    "2027-09-01",
-    "2027-09-02",
-    "2027-09-06",
-    "2027-09-07",
-    "2027-09-09"
-   ],
-   "state": "{\r\n  \"2027-09-01\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-08-26T08:04:34\"\r\n  },\r\n  \"2027-09-02\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-08-26T08:04:34\"\r\n  },\r\n  \"2027-09-06\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-08-26T08:04:34\"\r\n  },\r\n  \"2027-09-07\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-08-26T08:04:34\"\r\n  },\r\n  \"2027-09-09\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-08-26T08:04:34\"\r\n  }\r\n}",
-   "summary": "5 booked, 0 failed, 0 question(s)"
+   "booked_calls": [],
+   "state": null,
+   "summary": null
   }
  },
  {
@@ -159925,7 +159554,7 @@
    "booked_calls": [
     "2026-10-30"
    ],
-   "state": null,
+   "state": "{}",
    "summary": "0 booked, 1 failed, 1 question(s)"
   }
  },
@@ -160784,7 +160413,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2027-07-19\": {\"start\": \"08:00\", \"submitted\": \"2027-06-29T08:00:08\"}, \"2027-07-22\": {\"start\": \"08:00\", \"submitted\": \"2027-06-29T08:00:08\"}}",
+   "state": "{\r\n  \"2027-07-19\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-06-29T08:00:08\"\r\n  },\r\n  \"2027-07-22\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-06-29T08:00:08\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 2 question(s)"
   }
  },
@@ -161663,7 +161292,7 @@
    }
   ],
   "state": "{\"2027-04-02\": {\"start\": \"08:00\", \"submitted\": \"2027-04-05T08:00:03\"}}",
-  "car": "{\"car_make\": \"Make\", \"start_time\": \"09:00\"}",
+  "car": "[1, 2]",
   "booker": {
    "2027-04-07": {
     "kind": "return",
@@ -161683,77 +161312,30 @@
     "text": "Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
    }
   },
-  "fail": {},
+  "fail": {
+   "sign_in": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
+  },
   "dry_run": true,
   "approvals_only": false,
   "approvals_call": false,
   "expected": {
-   "report": {
-    "booked": [],
-    "failed": [],
-    "questions": [],
-    "decisions": [
-     {
-      "date": "2027-04-06",
-      "action": "book"
-     },
-     {
-      "date": "2027-04-07",
-      "action": "book"
-     },
-     {
-      "date": "2027-04-08",
-      "action": "book"
-     },
-     {
-      "date": "2027-04-09",
-      "action": "log"
-     },
-     {
-      "date": "2027-04-12",
-      "action": "log"
-     },
-     {
-      "date": "2027-04-14",
-      "action": "book"
-     },
-     {
-      "date": "2027-04-15",
-      "action": "book"
-     },
-     {
-      "date": "2027-04-19",
-      "action": "book"
-     }
-    ]
+   "report": null,
+   "error": {
+    "type": "SignInNeeded",
+    "text": "No usable sign-in for these scopes. At a console, run: ev-charging sign-in"
    },
-   "error": null,
-   "log": [
-    "would book Tue 06 Apr",
-    "would book Wed 07 Apr",
-    "would book Thu 08 Apr",
-    "Fri 09 Apr: a day, Travel block doesn't say EV: not booked",
-    "Mon 12 Apr: a day, Travel block doesn't say EV: not booked",
-    "would book Wed 14 Apr",
-    "would book Thu 15 Apr",
-    "would book Mon 19 Apr"
-   ],
+   "log": [],
    "renamed": [],
    "calls": [
     [
      "events",
      "2027-04-06",
      "2027-04-20"
-    ],
-    [
-     "messages_from",
-     "facilities@example.com",
-     "2027-03-06"
     ]
    ],
    "booked_calls": [],
    "state": "{\"2027-04-02\": {\"start\": \"08:00\", \"submitted\": \"2027-04-05T08:00:03\"}}",
-   "summary": "0 booked, 0 failed, 0 question(s)"
+   "summary": null
   }
  },
  {
@@ -163144,7 +162726,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2027-09-02\": {\"start\": \"08:00\", \"submitted\": \"2027-08-17T08:00:05\", \"approved\": \"Charger 2 (Front)\"}}",
+   "state": "{\r\n  \"2027-09-02\": {\r\n    \"approved\": \"Charger 2 (Front)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-08-17T08:00:05\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 1 question(s)"
   }
  },
@@ -167768,7 +167350,7 @@
    }
   ],
   "state": "{\n  \"2026-12-16\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-10T08:00:04\",\n    \"approved\": \"Charger 2 (Front)\"\n  },\n  \"2026-12-20\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-10T08:00:02\",\n    \"approved\": \"EV Charging 1 (Rear CP)\"\n  },\n  \"2026-12-15\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-10T08:00:00\"\n  },\n  \"2026-12-19\": {\n    \"start\": \"08:00\",\n    \"submitted\": \"2026-12-10T08:00:03\"\n  }\n}",
-  "car": "{\"start_time\": \"07:45\"}",
+  "car": "null",
   "booker": {
    "2026-12-11": {
     "kind": "raise",
@@ -169809,7 +169391,7 @@
    "booked_calls": [
     "2027-08-30"
    ],
-   "state": "{\r\n  \"2027-08-30\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-08-19T08:06:35\"\r\n  },\r\n  \"2027-09-06\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-08-19T08:00:02\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-08-30\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-08-19T08:06:35\"\r\n  },\r\n  \"2027-09-06\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-08-19T08:00:02\"\r\n  },\r\n  \"2027-09-07\": {\r\n    \"approved\": \"Spaced (Bay 3)\"\r\n  }\r\n}",
    "summary": "1 booked, 0 failed, 4 question(s)"
   }
  },
@@ -178118,7 +177700,7 @@
     ]
    ],
    "booked_calls": [],
-   "state": "{\"2027-12-02\": {\"approved\": \"  Spaced (Bay 3)  \", \"start\": \"08:00\", \"submitted\": \"2027-11-11T08:00:01\"}}",
+   "state": "{\r\n  \"2027-12-02\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-11-11T08:00:01\"\r\n  }\r\n}",
    "summary": "0 booked, 0 failed, 4 question(s)"
   }
  },

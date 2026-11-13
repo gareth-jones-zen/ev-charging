@@ -241,22 +241,73 @@ public static class Cli
     private static int Book(Settings settings, Args args, CliHost host)
     {
         var day = Planner.FromIsoDate(args.Date!);
-        if (args.Submit && State.Load(settings.StateFile).ContainsKey(PyTime.Iso(day)) && !args.Force)
+        string outcome;
+        // The same lock as a run (as Python 0.1.1), so the two can't request the same day at once.
+        using (Locks.Exclusive(Runner.LockName(settings.Path), 900, $"run for {settings.Path}"))
         {
-            Print(host.Out, $"Already requested for {Planner.Label(day)}; skipping (--force to request it again).");
-            return 0;
+            if (args.Submit && State.Load(settings.StateFile).ContainsKey(PyTime.Iso(day)) && !args.Force)
+            {
+                Print(host.Out, $"Already requested for {Planner.Label(day)}; skipping (--force to request it again).");
+                return 0;
+            }
+            var start = !string.IsNullOrEmpty(args.Start) ? args.Start : Form.StartTime(settings, Form.Car(settings));
+            // Only `book --submit` (and a real run) may click Submit; a preview never reaches the door.
+            if (!args.Submit)
+                outcome = host.BookForm(settings, day, SubmitDoor.Refusing, false, args.Headless, start);
+            else
+            {
+                var submitted = Submit(settings, day, start, args.Headless, host);
+                if (submitted is null)
+                    return 1;
+                outcome = submitted;
+            }
         }
-        var start = !string.IsNullOrEmpty(args.Start) ? args.Start : Form.StartTime(settings, Form.Car(settings));
-        // Only `book --submit` (and a real run) may click Submit; a preview never reaches the door.
-        var door = args.Submit ? new SubmitDoor(SubmitMode.Live) : SubmitDoor.Refusing;
-        var outcome = host.BookForm(settings, day, door, args.Submit, args.Headless, start);
         if (outcome.StartsWith("Submitted", StringComparison.Ordinal))
-        {
-            State.RecordSubmission(settings.StateFile, day, start, host.Now());
             outcome += " Approval comes by email.";
-        }
         Print(host.Out, outcome);
         return outcome.StartsWith("Submitted", StringComparison.Ordinal) || outcome.StartsWith("Preview", StringComparison.Ordinal) ? 0 : 1;
+    }
+
+    /// <summary>Record the day, then submit; take the record off again if it wasn't submitted (see State). Null if it
+    /// couldn't be recorded, so nothing was submitted.</summary>
+    private static string? Submit(Settings settings, DateOnly day, string start, bool headless, CliHost host)
+    {
+        JsonNode? before;
+        try
+        {
+            before = State.RecordSubmission(settings.StateFile, day, start, host.Now());
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            Print(host.Err, $"Not submitted: couldn't record it in the state file first. {error.Message}");
+            return null;
+        }
+        string outcome;
+        try
+        {
+            outcome = host.BookForm(settings, day, new SubmitDoor(SubmitMode.Live), true, headless, start);
+        }
+        catch
+        {
+            Undo(settings, day, before, host);
+            throw;
+        }
+        if (!outcome.StartsWith("Submitted", StringComparison.Ordinal))
+            Undo(settings, day, before, host);
+        return outcome;
+    }
+
+    private static void Undo(Settings settings, DateOnly day, JsonNode? before, CliHost host)
+    {
+        try
+        {
+            State.UndoSubmission(settings.StateFile, day, before);
+        }
+        catch (Exception error) when (error is IOException or UnauthorizedAccessException)
+        {
+            Print(host.Err, $"{Planner.Label(day)} is still marked as requested: the state file couldn't be updated ({error.Message}). "
+                + "The daily run won't request it; book it again with --force.");
+        }
     }
 
     private static int SignIn(Settings settings, bool graphOnly, CliHost host)
