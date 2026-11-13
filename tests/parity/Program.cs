@@ -6,6 +6,7 @@
 //   ev-charging-parity cli <cli.json>                   argparse's texts and exit codes
 //   ev-charging-parity record <settings.toml> <out.json> a live read for replay: GETs only, through the read-only fence,
 //                                                        silent sign-in on the settings' msal_cache (which must be a copy)
+//   ev-charging-parity keys <settings.toml>...           the run lock and Edge profile lock names, to compare with Python
 //   ev-charging-parity replay <recording.json> <out.json> the recording replayed (dry, and a real run with renames
 //                                                        journaled and a fake booker), as oracle.py replay does
 using System.Security.Cryptography;
@@ -87,8 +88,18 @@ switch (args.FirstOrDefault())
                               + $"{run["renamed"]!.AsArray().Count} renames, {run["urls"]!.AsArray().Count} reads");
         return 0;
     }
+    case "keys":
+    {
+        // The run lock and the Edge profile lock for each settings file: names only (they're hashes).
+        foreach (var path in args.Skip(1))
+        {
+            var settings = Settings.Load(path);
+            Console.WriteLine($"{Runner.LockName(settings.Path)} {Form.ProfileLockName(settings.EdgeProfile)}");
+        }
+        return 0;
+    }
     default:
-        Console.Error.WriteLine("usage: ev-charging-parity scenarios|misc|cli|record|replay ...");
+        Console.Error.WriteLine("usage: ev-charging-parity scenarios|misc|cli|record|replay|keys ...");
         return 2;
 }
 
