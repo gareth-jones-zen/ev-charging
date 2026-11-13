@@ -1,0 +1,4 @@
+# Raw string literals (settings templates, test settings) keep the source file's line ends, so pin them.
+*.cs text eol=lf
+*.json text eol=lf
+*.html text eol=lf

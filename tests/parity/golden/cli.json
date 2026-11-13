@@ -1,0 +1,208 @@
+{
+ "cli": [
+  {
+   "argv": [
+    "--help"
+   ],
+   "out": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\n\nev-charging: book an office EV charging slot when your calendar asks for one.\n\nev-charging config                  create the settings file (if missing) and say where it is\nev-charging sign-in                 sign in to Microsoft, then to the form in the tool's Edge window\nev-charging book 2026-11-26         fill in the form and screenshot it; submits nothing\nev-charging book 2026-11-26 --submit    and submit it (a request, approved by email)\nev-charging run --dry-run           what the daily run would book, ask and rename; changes nothing\nev-charging run                     book what the calendar asks for, apply approvals, list questions\nev-charging run --hook              then pass the report to the settings' after_run command\nev-charging approvals [--dry-run]   only apply the approval emails to the calendar\nev-charging status                  requests from today on, and whether each is approved\nev-charging autostart on            run daily at daily_at and at logon, and now (off, status)\n\npositional arguments:\n  {config,sign-in,book,run,approvals,status,autostart}\n    config              create the settings file if missing, and say where it\n                        is\n    sign-in             sign in to Microsoft, and to the form in the tool's\n                        Edge window\n    book                fill in (and with --submit, submit) the form for one\n                        day\n    run                 the daily run: book, apply approvals, list questions\n    approvals           only apply the approval emails to the calendar\n    status              requests from today on, and whether each is approved\n    autostart           run daily and at logon (Task Scheduler)\n\noptions:\n  -h, --help            show this help message and exit\n  --version             show program's version number and exit\n  --config CONFIG       settings file (default %APPDATA%\\ev-\n                        charging\\config.toml)\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "--version"
+   ],
+   "out": "0.1.0\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: the following arguments are required: command\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "bogus"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: argument command: invalid choice: 'bogus' (choose from 'config', 'sign-in', 'book', 'run', 'approvals', 'status', 'autostart')\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "run",
+    "--help"
+   ],
+   "out": "usage: ev-charging run [-h] [--dry-run] [--json] [--hook] [--scheduled]\n\noptions:\n  -h, --help   show this help message and exit\n  --dry-run    say what it would do; change nothing\n  --json       print the report as JSON\n  --hook       then run the after_run command (not on a dry run)\n  --scheduled  as the daily task runs it: never open a browser to sign in, and\n               notify\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "approvals",
+    "-h"
+   ],
+   "out": "usage: ev-charging approvals [-h] [--dry-run] [--json]\n\noptions:\n  -h, --help  show this help message and exit\n  --dry-run   say what it would do; change nothing\n  --json      print the report as JSON\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "book",
+    "-h"
+   ],
+   "out": "usage: ev-charging book [-h] [--submit] [--start START] [--headless] [--force]\n                        date\n\npositional arguments:\n  date           yyyy-mm-dd\n\noptions:\n  -h, --help     show this help message and exit\n  --submit       submit it (default: fill in and screenshot only)\n  --start START  start time, such as 08:00 (default from the settings)\n  --headless     no visible window\n  --force        submit even if this day was already requested\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "book"
+   ],
+   "out": "",
+   "err": "usage: ev-charging book [-h] [--submit] [--start START] [--headless] [--force]\n                        date\nev-charging book: error: the following arguments are required: date\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "sign-in",
+    "-h"
+   ],
+   "out": "usage: ev-charging sign-in [-h] [--graph-only]\n\noptions:\n  -h, --help    show this help message and exit\n  --graph-only  skip the form's Edge window\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "status",
+    "-h"
+   ],
+   "out": "usage: ev-charging status [-h]\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "config",
+    "-h"
+   ],
+   "out": "usage: ev-charging config [-h]\n\noptions:\n  -h, --help  show this help message and exit\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "autostart",
+    "-h"
+   ],
+   "out": "usage: ev-charging autostart [-h] {on,off,status}\n\npositional arguments:\n  {on,off,status}\n\noptions:\n  -h, --help       show this help message and exit\n",
+   "err": "",
+   "code": 0
+  },
+  {
+   "argv": [
+    "autostart"
+   ],
+   "out": "",
+   "err": "usage: ev-charging autostart [-h] {on,off,status}\nev-charging autostart: error: the following arguments are required: action\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "autostart",
+    "maybe"
+   ],
+   "out": "",
+   "err": "usage: ev-charging autostart [-h] {on,off,status}\nev-charging autostart: error: argument action: invalid choice: 'maybe' (choose from 'on', 'off', 'status')\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "run",
+    "--nope"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: unrecognized arguments: --nope\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "run",
+    "--dry-run=x"
+   ],
+   "out": "",
+   "err": "usage: ev-charging run [-h] [--dry-run] [--json] [--hook] [--scheduled]\nev-charging run: error: argument --dry-run: ignored explicit argument 'x'\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "--config"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: argument --config: expected one argument\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "run",
+    "--hook",
+    "--scheduled",
+    "extra"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: unrecognized arguments: extra\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "approvals",
+    "--hook"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: unrecognized arguments: --hook\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "book",
+    "2026-11-26",
+    "--start"
+   ],
+   "out": "",
+   "err": "usage: ev-charging book [-h] [--submit] [--start START] [--headless] [--force]\n                        date\nev-charging book: error: argument --start: expected one argument\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "--dry",
+    "run"
+   ],
+   "out": "",
+   "err": "usage: ev-charging [-h] [--version] [--config CONFIG]\n                   {config,sign-in,book,run,approvals,status,autostart} ...\nev-charging: error: unrecognized arguments: --dry\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "run",
+    "--dr"
+   ],
+   "out": "",
+   "err": "No settings file at C:\\Users\\gareth.jones\\AppData\\Roaming\\ev-charging\\config.toml. Run `ev-charging config` to create one.\n",
+   "code": 2
+  },
+  {
+   "argv": [
+    "book",
+    "x",
+    "--s",
+    "1"
+   ],
+   "out": "",
+   "err": "usage: ev-charging book [-h] [--submit] [--start START] [--headless] [--force]\n                        date\nev-charging book: error: ambiguous option: --s could match --submit, --start\n",
+   "code": 2
+  }
+ ],
+ "template": "# ev-charging settings. See the README for what each one does.\n\nlogin_hint = \"you@example.com\"         # your work sign-in, for Microsoft Graph\n# tenant = \"organizations\"             # or your organisation's tenant id\n# timezone = \"GMT Standard Time\"       # Windows name of your time zone, for calendar times\n# car_file = \"%LOCALAPPDATA%/ev-charging/car.json\"   # your car's details: keep it out of any repo\n# daily_at = \"09:00\"                   # when autostart's daily run happens (and at logon)\n\n[booking]\ndays_ahead = 14          # how far ahead to look\nstart_time = \"08:00\"     # the slot you ask for\nslot_hours = 4           # how long a slot lasts\nnotice_days = 1          # the first day considered is today + this\nweekdays_only = true\n\n[trigger]\n# A calendar entry whose subject matches `entry` is the day's travel block; it asks for a slot when its\n# subject also matches `book`. Both are case-insensitive regular expressions.\nentry = '^\\s*travel'\nbook = '\\bev\\b'\nlabel = \"Travel block\"   # what to call it in questions\nwork_plan = \"office\"     # the Outlook work plan must say this to book; \"\" to ignore the work plan\n\n[form]\nurl = \"https://forms.office.com/Pages/ResponsePage.aspx?id=YOUR-FORM-ID\"\nquestions = 6            # how many questions the form has: anything else stops the booking\nconfirmation = \"response was submitted|Your response was|Thanks\"\n\n# One [[form.field]] per question to fill, by its position on the form (1 is the first).\n# type: date, choice (a dropdown) or text. value: {date:...}, {start}, or any key in car_file.\n[[form.field]]\nquestion = 1\ntype = \"date\"\nvalue = \"{date:%d/%m/%Y}\"\n\n[[form.field]]\nquestion = 2\ntype = \"choice\"\nvalue = \"{start}\"\n\n[[form.field]]\nquestion = 3\ntype = \"text\"\nvalue = \"{car_make}\"\n\n[approvals]\nsender = \"facilities@example.com\"\nsubject = \"electric car charging request\"\napproved = \"APPROVED\"\ndeclined = \"DECLIN|REJECT\"\ndate = 'Date\\s*-\\s*(\\d{4}-\\d{2}-\\d{2})'\nstart = 'Start Time\\s*-\\s*(\\d{1,2}:\\d{2})'\npoint = 'assigned;\\s*(.+?\\))'\n# charge_points = [\"Charger 1\"]   # optional: names to look for if `point` finds nothing\nrename = \"Travel; EV – {point}, {start}–{end}\"\n"
+}

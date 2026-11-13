@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>ev-charging-background</AssemblyName>
+    <RootNamespace>EvCharging</RootNamespace>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EvCharging\EvCharging.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="$(BackgroundToolsLib)src\WinBackground\WinBackground.csproj" />
+    <ProjectReference Include="$(BackgroundToolsLib)src\M365Graph\M365Graph.csproj" />
+    <ProjectReference Include="$(BackgroundToolsLib)src\PyCompat\PyCompat.csproj" />
+    <ProjectReference Include="$(BackgroundToolsLib)src\EdgeDevTools\EdgeDevTools.csproj" />
+    <PackageReference Include="Tomlyn" Version="2.11.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="EvCharging.Tests" />
+    <InternalsVisibleTo Include="Parity" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,21 @@
+<Project>
+  <!-- Shared by every project. The exes are published with Native AOT, so everything is AOT- and trim-checked. -->
+  <PropertyGroup>
+    <TargetFramework>net11.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- The Python version it ports, so the version option says the same. -->
+    <Version>0.1.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Authors>Gareth Jones</Authors>
+    <RepositoryUrl>https://github.com/gareth-jones-zen/ev-charging</RepositoryUrl>
+    <!-- The shared libraries are a sibling checkout: ..\background-tools-lib (CI checks it out beside this repo). -->
+    <BackgroundToolsLib Condition="'$(BackgroundToolsLib)' == ''">$(MSBuildThisFileDirectory)..\background-tools-lib\</BackgroundToolsLib>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+</Project>
