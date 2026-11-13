@@ -237,10 +237,22 @@ class RunTests(Base):
 
     def test_failed_booking_is_a_question(self):
         report = run.run(self.config, self.outlook(messages=[]), today=TODAY, log=self.log,
-                         booker=lambda c, d: "Clicked Submit but didn't see a confirmation.")
+                         booker=lambda c, d: "Not submitted: the form didn't load.")
         self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
         self.assertTrue(any("booking FAILED" in q for q in report["questions"]))
         self.assertFalse(self.config.state_file.exists() and state.load(self.config.state_file))
+
+    def test_unconfirmed_submit_is_kept_and_never_sent_again(self):
+        report = run.run(self.config, self.outlook(messages=[]), today=TODAY, log=self.log,
+                         booker=lambda c, d: f"{form.UNCONFIRMED}. Check x.png")
+        self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
+        booked = [q for q in report["questions"] if q.startswith(("Mon 16 Nov", "Tue 24 Nov")) and "Submit" in q]
+        self.assertEqual(len(booked), 2)
+        self.assertTrue(all("may have gone" in q and "won't be sent again" in q for q in booked))
+        self.assertEqual(sorted(state.load(self.config.state_file)), ["2026-11-16", "2026-11-24"])
+        again = run.run(self.config, self.outlook(messages=[]), today=TODAY, log=self.log,
+                        booker=lambda c, d: self.fail("sent twice"))
+        self.assertEqual(again["booked"], [])
 
     def test_declined_and_unapproved_tomorrow_are_questions(self):
         state.save(self.config.state_file, {"2026-11-13": {"start": "08:00"}, "2026-11-24": {"start": "08:00"}})
@@ -414,7 +426,7 @@ class FixedBugTests(Base):
 
         def booker(config, day):
             broken.start()
-            return "Clicked Submit but didn't see a confirmation."
+            return "Not submitted: the form didn't load."
         with mock.patch.object(state.time, "sleep"):
             try:
                 report = run.run(self.config, self.outlook(), today=TODAY, log=self.log, booker=booker)
@@ -430,11 +442,17 @@ class FixedBugTests(Base):
 
         def fake(config, day, submit, headless, start):
             seen.append(day.isoformat() in state.load(config.state_file))
-            return "Clicked Submit but didn't see a confirmation."
+            return "Not submitted: the form didn't load."
         with mock.patch.object(form, "book", fake), contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(cli._book(self.config, args), 1)
         self.assertEqual(seen, [True])
         self.assertNotIn("2026-11-26", state.load(self.config.state_file))
+        unconfirmed = lambda *a, **k: f"{form.UNCONFIRMED}. Check x.png"   # noqa: E731
+        with mock.patch.object(form, "book", unconfirmed), contextlib.redirect_stdout(io.StringIO()) as out:
+            self.assertEqual(cli._book(self.config, args), 1)
+        self.assertIn("2026-11-26", state.load(self.config.state_file))
+        self.assertIn("won't send it again", out.getvalue())
+        state.save(self.config.state_file, {})
         with mock.patch.object(form, "book", lambda *a, **k: "Submitted: Thu 26 Nov 2026, 08:00."), \
                 contextlib.redirect_stdout(io.StringIO()):
             self.assertEqual(cli._book(self.config, args), 0)

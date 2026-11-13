@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ev-charging"
-version = "0.1.1"
+version = "0.1.2"
 description = "Book an office EV charging slot (a Microsoft Form) when your Outlook calendar asks for one, and put the approved charge point in your calendar."
 readme = "README.md"
 requires-python = ">=3.11"
