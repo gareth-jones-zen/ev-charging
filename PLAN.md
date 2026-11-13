@@ -176,3 +176,8 @@ random stream so the other scenarios are untouched, **a sign-in needed on every 
 scenarios) and **car files that aren't objects** (`[1, 2]`, `"x"`, `null`, `3`; 21 scenarios), 36 scenarios in all
 (3 have both).
 `misc.json` and `cli.json` are unchanged apart from `--version` (0.1.1).
+
+**Parity with the fixed Python, through the AOT runner (13 Nov, 09:10):** goldens 400 of 400 scenarios, 876 of 876
+misc, 24 of 24 CLI; **20,000 generated scenarios** (seeds 20261113 and 777, with the new cases: 822 needing a sign-in,
+1,188 with a car file that isn't an object) all identical. Tests 58 (45 before, plus 13 in `FixedBugTests.cs`), green
+locally against background-tools-lib-main and in CI. No AOT warnings; exes about 11 MB as before.
