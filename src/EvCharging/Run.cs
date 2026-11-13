@@ -223,6 +223,13 @@ public static class Runner
             return;
         }
         report.Failed.Add(PyTime.Iso(day));
+        if (outcome.StartsWith(Form.Unconfirmed, StringComparison.Ordinal))   // it may have gone: keep the record
+        {
+            report.Questions.Add($"{label}: clicked Submit but saw no confirmation, so the request may have gone. "
+                                 + "It stays marked as requested and won't be sent again: check for Facilities' email, "
+                                 + "and if it didn't go through, book it by hand (--force).");
+            return;
+        }
         var question = $"{label}: booking FAILED. {PyStr.Head(outcome, 120)}";
         try
         {

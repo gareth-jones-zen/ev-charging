@@ -8,7 +8,7 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <!-- The Python version it ports, so the version option says the same. -->
-    <Version>0.1.1</Version>
+    <Version>1.0.0-dev</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Authors>Gareth Jones</Authors>
     <RepositoryUrl>https://github.com/gareth-jones-zen/ev-charging</RepositoryUrl>

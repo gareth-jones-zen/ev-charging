@@ -150,6 +150,11 @@ def _book(config: Config, day: dt.date, report: dict, headless: bool, log, booke
         report["booked"].append(day.isoformat())
         return
     report["failed"].append(day.isoformat())
+    if outcome.startswith(form.UNCONFIRMED):   # it may have gone: keep the record, so it's never sent twice
+        report["questions"].append(f"{label}: clicked Submit but saw no confirmation, so the request may have gone. "
+                                   "It stays marked as requested and won't be sent again: check for Facilities' email, "
+                                   "and if it didn't go through, book it by hand (--force).")
+        return
     question = f"{label}: booking FAILED. {outcome[:120]}"
     try:
         state_mod.undo_submission(config.state_file, day, before)

@@ -29,6 +29,10 @@ class FormError(RuntimeError):
     pass
 
 
+# Submit was clicked but no confirmation appeared, so the request may have gone. The day stays recorded
+# as requested, so no run sends it a second time; GJ checks (13 Nov 2026: keep the record).
+UNCONFIRMED = "Clicked Submit but didn't see a confirmation"
+
 def car(config: Config) -> dict:
     """The car's details (make, model, registration, anything the form asks), from a file outside any repo."""
     path = config.car_file
@@ -114,7 +118,7 @@ def book(config: Config, day: dt.date, submit: bool = False, headless: bool = Fa
             except Exception:
                 after = config.screenshots / f"{day.isoformat()}-after-submit.png"
                 page.screenshot(path=str(after), full_page=True)
-                return f"Clicked Submit but didn't see a confirmation. Check {after}"
+                return f"{UNCONFIRMED}. Check {after}"
             return f"Submitted: {day:%a %d %b %Y}, {start}."
         finally:
             context.close()

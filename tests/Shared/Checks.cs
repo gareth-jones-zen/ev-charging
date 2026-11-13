@@ -259,8 +259,13 @@ public static class Checks
             var code = global::EvCharging.Cli.Run(argv, new CliHost { Out = output, Err = error, Env = Env });
             string Norm(string text) => text.Replace("\r\n", "\n", StringComparison.Ordinal);
             var expectedErr = ((string)item["err"]!).Replace(GoldenHome + @"\AppData\Roaming", appData, StringComparison.Ordinal);
+            // --version is the build's (the release's tag), not the Python oracle's.
+            var expectedOut = argv is ["--version"]
+                ? (System.Reflection.CustomAttributeExtensions.GetCustomAttribute<System.Reflection.AssemblyInformationalVersionAttribute>(
+                    typeof(global::EvCharging.Cli).Assembly)?.InformationalVersion ?? "") + "\n"
+                : (string)item["out"]!;
             compared++;
-            if (Norm(output.ToString()) != (string)item["out"]! || Norm(error.ToString()) != expectedErr || code != (int)item["code"]!)
+            if (Norm(output.ToString()) != expectedOut || Norm(error.ToString()) != expectedErr || code != (int)item["code"]!)
                 differences.Add("cli " + string.Join(' ', argv));
         }
         compared++;

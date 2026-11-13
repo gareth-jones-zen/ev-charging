@@ -292,6 +292,9 @@ public static class Cli
             Undo(settings, day, before, host);
             throw;
         }
+        if (outcome.StartsWith(Form.Unconfirmed, StringComparison.Ordinal))   // it may have gone: keep the record
+            return outcome + " It stays marked as requested, so the daily run won't send it again; "
+                   + "if it didn't go through, book it again with --force.";
         if (!outcome.StartsWith("Submitted", StringComparison.Ordinal))
             Undo(settings, day, before, host);
         return outcome;

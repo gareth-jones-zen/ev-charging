@@ -26,6 +26,10 @@ public sealed class FormError(string message) : Exception(message);
 /// </summary>
 public static class Form
 {
+    /// <summary>Submit was clicked but no confirmation appeared, so the request may have gone. The day stays recorded
+    /// as requested, so no run sends it a second time; GJ checks (13 Nov 2026: keep the record).</summary>
+    public const string Unconfirmed = "Clicked Submit but didn't see a confirmation";
+
     public const string Question = "[data-automation-id='questionItem']";
 
     /// <summary>How long a booking waits for another tool to finish with the Edge profile before giving up.</summary>
@@ -175,7 +179,7 @@ public static class Form
             {
                 var after = Path.Combine(settings.Screenshots, $"{PyTime.Iso(day)}-after-submit.png");
                 await page.ScreenshotAsync(after).ConfigureAwait(false);
-                return $"Clicked Submit but didn't see a confirmation. Check {after}";
+                return $"{Unconfirmed}. Check {after}";
             }
             return $"Submitted: {PyTime.Strftime(day, "%a %d %b %Y")}, {start}.";
         }

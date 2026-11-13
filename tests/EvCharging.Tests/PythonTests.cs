@@ -270,10 +270,24 @@ public sealed class PythonTests : IDisposable
     [Fact]
     public void test_failed_booking_is_a_question()
     {
-        var report = Run(Outlook(messages: []), (_, _) => "Clicked Submit but didn't see a confirmation.");
+        var report = Run(Outlook(messages: []), (_, _) => "Not submitted: the form didn't load.");
         Assert.Equal(["2026-11-16", "2026-11-24"], report.Failed);
         Assert.Contains(report.Questions, q => q.Contains("booking FAILED"));
         Assert.False(File.Exists(Config.StateFile) && State.Load(Config.StateFile).Count > 0);
+    }
+
+    [Fact]
+    public void test_unconfirmed_submit_is_kept_and_never_sent_again()
+    {
+        var report = Run(Outlook(messages: []), (_, _) => $"{Form.Unconfirmed}. Check x.png");
+        Assert.Equal(["2026-11-16", "2026-11-24"], report.Failed);
+        var booked = report.Questions.Where(q => (q.StartsWith("Mon 16 Nov", StringComparison.Ordinal)
+            || q.StartsWith("Tue 24 Nov", StringComparison.Ordinal)) && q.Contains("Submit", StringComparison.Ordinal)).ToList();
+        Assert.Equal(2, booked.Count);
+        Assert.All(booked, q => Assert.Contains("won't be sent again", q, StringComparison.Ordinal));
+        Assert.Equal(["2026-11-16", "2026-11-24"], State.Load(Config.StateFile).Select(kv => kv.Key).Order(StringComparer.Ordinal));
+        var again = Run(Outlook(messages: []), (_, _) => throw new InvalidOperationException("sent twice"));
+        Assert.Empty(again.Booked);
     }
 
     [Fact]

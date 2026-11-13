@@ -40346,7 +40346,7 @@
      "2027-03-17"
     ],
     "questions": [
-     "Wed 17 Mar: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+     "Wed 17 Mar: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
      "Thu 18 Mar: Travel block says EV but work plan says nothing set. Book EV?"
     ],
     "decisions": [
@@ -40363,7 +40363,7 @@
    "error": null,
    "log": [
     "book Wed 17 Mar: Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-    "ask: Wed 17 Mar: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+    "ask: Wed 17 Mar: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
     "ask: Thu 18 Mar: Travel block says EV but work plan says nothing set. Book EV?"
    ],
    "renamed": [],
@@ -40382,7 +40382,7 @@
    "booked_calls": [
     "2027-03-17"
    ],
-   "state": "{}",
+   "state": "{\r\n  \"2027-03-17\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-03-13T08:03:35\"\r\n  }\r\n}",
    "summary": "0 booked, 1 failed, 2 question(s)"
   }
  },
@@ -49995,9 +49995,9 @@
      "2027-02-13"
     ],
     "questions": [
-     "Tue 26 Jan: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-     "Mon 01 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-     "Sat 13 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+     "Tue 26 Jan: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
+     "Mon 01 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
+     "Sat 13 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
     ],
     "decisions": [
      {
@@ -50064,9 +50064,9 @@
     "book Tue 09 Feb: Submitted: Tue 09 Feb 2027, 08:00.",
     "book Sat 13 Feb: Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
     "book Mon 15 Feb: Submitted: Mon 15 Feb 2027, 08:00.",
-    "ask: Tue 26 Jan: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-    "ask: Mon 01 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-    "ask: Sat 13 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+    "ask: Tue 26 Jan: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
+    "ask: Mon 01 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
+    "ask: Sat 13 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
    ],
    "renamed": [],
    "calls": [
@@ -50094,7 +50094,7 @@
     "2027-02-13",
     "2027-02-15"
    ],
-   "state": "{\r\n  \"2027-01-29\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-01-31\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-02\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-03\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-04\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-09\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-15\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-01-26\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-01-29\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-01-31\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-01\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-02\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-03\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-04\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-09\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-13\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  },\r\n  \"2027-02-15\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-01-24T08:07:33\"\r\n  }\r\n}",
    "summary": "8 booked, 3 failed, 3 question(s)"
   }
  },
@@ -62302,7 +62302,7 @@
     ],
     "questions": [
      "Mon 12 Jan: Trajet says EV but work plan says nothing set. Book EV?",
-     "Tue 13 Jan: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+     "Tue 13 Jan: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
      "Mon 19 Jan: Trajet says EV but work plan says nothing set. Book EV?",
      "Tue 20 Jan: booking FAILED. Preview only, nothing submitted: x.png",
      "Thu 22 Jan: Trajet says EV but work plan says nothing set. Book EV?",
@@ -62347,7 +62347,7 @@
     "book Tue 20 Jan: Preview only, nothing submitted: x.png",
     "FAILED applying approvals: later events down éééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé",
     "ask: Mon 12 Jan: Trajet says EV but work plan says nothing set. Book EV?",
-    "ask: Tue 13 Jan: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+    "ask: Tue 13 Jan: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
     "ask: Mon 19 Jan: Trajet says EV but work plan says nothing set. Book EV?",
     "ask: Tue 20 Jan: booking FAILED. Preview only, nothing submitted: x.png",
     "ask: Thu 22 Jan: Trajet says EV but work plan says nothing set. Book EV?",
@@ -62382,7 +62382,7 @@
     "2026-01-13",
     "2026-01-20"
    ],
-   "state": "{\r\n  \"2026-01-12\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2026-01-12\": {\r\n    \"approved\": \"EV Charging 2 (Front CP)\"\r\n  },\r\n  \"2026-01-13\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2026-01-07T08:07:31\"\r\n  }\r\n}",
    "summary": "0 booked, 2 failed, 8 question(s)"
   }
  },
@@ -87482,7 +87482,7 @@
     ],
     "questions": [
      "Fri 26 Nov: Travel block says EV but work plan says remote, unknown. Book EV?",
-     "Sat 27 Nov: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+     "Sat 27 Nov: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
      "Sun 28 Nov: Travel block says EV but work plan says unknown. Book EV?",
      "Wed 01 Dec: Travel block says EV but work plan says remote, unknown. Book EV?",
      "Fri 03 Dec: booking FAILED. FormError: Expected 6 questions, found 7. The form has changed; not filling it.",
@@ -87537,7 +87537,7 @@
     "Sun 05 Dec: EV approved (Spaced (Bay 3)) but no morning Travel block to update (not raised)",
     "Sun 19 Dec: EV approved (Charger 2 (Front)) but no morning Travel block to update (not raised)",
     "ask: Fri 26 Nov: Travel block says EV but work plan says remote, unknown. Book EV?",
-    "ask: Sat 27 Nov: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+    "ask: Sat 27 Nov: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
     "ask: Sun 28 Nov: Travel block says EV but work plan says unknown. Book EV?",
     "ask: Wed 01 Dec: Travel block says EV but work plan says remote, unknown. Book EV?",
     "ask: Fri 03 Dec: booking FAILED. FormError: Expected 6 questions, found 7. The form has changed; not filling it.",
@@ -87575,7 +87575,7 @@
     "2027-11-27",
     "2027-12-03"
    ],
-   "state": "{\r\n  \"2027-11-30\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-11-26T08:00:03\"\r\n  },\r\n  \"2027-12-05\": {\r\n    \"approved\": \"Spaced (Bay 3)\"\r\n  },\r\n  \"2027-12-09\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-11-26T08:00:06\"\r\n  },\r\n  \"2027-12-19\": {\r\n    \"approved\": \"Charger 2 (Front)\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-11-27\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-11-26T08:07:31\"\r\n  },\r\n  \"2027-11-30\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-11-26T08:00:03\"\r\n  },\r\n  \"2027-12-05\": {\r\n    \"approved\": \"Spaced (Bay 3)\"\r\n  },\r\n  \"2027-12-09\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-11-26T08:00:06\"\r\n  },\r\n  \"2027-12-19\": {\r\n    \"approved\": \"Charger 2 (Front)\"\r\n  }\r\n}",
    "summary": "0 booked, 2 failed, 6 question(s)"
   }
  },
@@ -140101,7 +140101,7 @@
      "Fri 29 Oct: Travel block says EV but work plan says nothing set. Book EV?",
      "Mon 01 Nov: Travel block says EV but work plan says unknown. Book EV?",
      "Fri 05 Nov: Travel block says EV but work plan says unknown. Book EV?",
-     "Thu 11 Nov: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+     "Thu 11 Nov: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
     ],
     "decisions": [
      {
@@ -140143,7 +140143,7 @@
     "ask: Fri 29 Oct: Travel block says EV but work plan says nothing set. Book EV?",
     "ask: Mon 01 Nov: Travel block says EV but work plan says unknown. Book EV?",
     "ask: Fri 05 Nov: Travel block says EV but work plan says unknown. Book EV?",
-    "ask: Thu 11 Nov: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+    "ask: Thu 11 Nov: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
    ],
    "renamed": [],
    "calls": [
@@ -140168,7 +140168,7 @@
     "2027-11-08",
     "2027-11-11"
    ],
-   "state": "{\r\n  \"2027-10-31\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:00:03\"\r\n  },\r\n  \"2027-11-03\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-21\": {}\r\n}",
+   "state": "{\r\n  \"2027-10-31\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:00:03\"\r\n  },\r\n  \"2027-11-03\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-11\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-10-28T08:06:39\"\r\n  },\r\n  \"2027-11-21\": {}\r\n}",
    "summary": "2 booked, 1 failed, 4 question(s)"
   }
  },
@@ -145728,7 +145728,7 @@
     ],
     "questions": [
      "Wed 31 Mar: Travel block says EV but work plan says nothing set. Book EV?",
-     "Thu 01 Apr: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+     "Thu 01 Apr: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
     ],
     "decisions": [
      {
@@ -145765,7 +145765,7 @@
     "Mon 29 Mar: office day, Travel block doesn't say EV: not booked",
     "book Thu 01 Apr: Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
     "ask: Wed 31 Mar: Travel block says EV but work plan says nothing set. Book EV?",
-    "ask: Thu 01 Apr: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+    "ask: Thu 01 Apr: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
    ],
    "renamed": [],
    "calls": [
@@ -145789,7 +145789,7 @@
     "2027-03-22",
     "2027-04-01"
    ],
-   "state": "{\r\n  \"2027-03-22\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-03-22T08:00:31\"\r\n  },\r\n  \"2027-03-23\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-03-22T08:00:08\"\r\n  },\r\n  \"2027-03-25\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-03-22T08:00:04\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-03-22\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-03-22T08:00:31\"\r\n  },\r\n  \"2027-03-23\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-03-22T08:00:08\"\r\n  },\r\n  \"2027-03-25\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-03-22T08:00:04\"\r\n  },\r\n  \"2027-04-01\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-03-22T08:00:31\"\r\n  }\r\n}",
    "summary": "1 booked, 1 failed, 2 question(s)"
   }
  },
@@ -150661,7 +150661,7 @@
     ],
     "questions": [
      "Tue 21 Dec: Trajet says EV but work plan says remote. Book EV?",
-     "Thu 23 Dec: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+     "Thu 23 Dec: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
      "Fri 24 Dec: Trajet says EV but work plan says remote. Book EV?",
      "Tue 28 Dec: Trajet says EV but work plan says nothing set. Book EV?"
     ],
@@ -150688,7 +150688,7 @@
    "log": [
     "book Thu 23 Dec: Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
     "ask: Tue 21 Dec: Trajet says EV but work plan says remote. Book EV?",
-    "ask: Thu 23 Dec: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+    "ask: Thu 23 Dec: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
     "ask: Fri 24 Dec: Trajet says EV but work plan says remote. Book EV?",
     "ask: Tue 28 Dec: Trajet says EV but work plan says nothing set. Book EV?"
    ],
@@ -150713,7 +150713,7 @@
    "booked_calls": [
     "2027-12-23"
    ],
-   "state": "{}",
+   "state": "{\r\n  \"2027-12-23\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2027-12-18T08:01:37\"\r\n  }\r\n}",
    "summary": "0 booked, 1 failed, 4 question(s)"
   }
  },
@@ -159524,7 +159524,7 @@
      "2026-10-30"
     ],
     "questions": [
-     "Fri 30 Oct: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+     "Fri 30 Oct: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
     ],
     "decisions": [
      {
@@ -159536,7 +159536,7 @@
    "error": null,
    "log": [
     "book Fri 30 Oct: Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
-    "ask: Fri 30 Oct: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png"
+    "ask: Fri 30 Oct: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force)."
    ],
    "renamed": [],
    "calls": [
@@ -159554,7 +159554,7 @@
    "booked_calls": [
     "2026-10-30"
    ],
-   "state": "{}",
+   "state": "{\r\n  \"2026-10-30\": {\r\n    \"start\": \"09:15\",\r\n    \"submitted\": \"2026-10-26T08:05:33\"\r\n  }\r\n}",
    "summary": "0 booked, 1 failed, 1 question(s)"
   }
  },
@@ -167854,7 +167854,7 @@
      "2027-02-05"
     ],
     "questions": [
-     "Fri 05 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+     "Fri 05 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
      "Sat 06 Feb: Travel block says EV but work plan says nothing set. Book EV?",
      "Mon 15 Feb: Travel block says EV but work plan says nothing set. Book EV?",
      "Tue 16 Feb: Travel block says EV but work plan says timeOff, unknown. Book EV?"
@@ -167896,7 +167896,7 @@
     "Mon 08 Feb: EV requested, but work plan no longer says office (not raised)",
     "Thu 11 Feb: EV requested, but work plan no longer says office (not raised)",
     "Wed 17 Feb: office day, Travel block doesn't say EV: not booked",
-    "ask: Fri 05 Feb: booking FAILED. Clicked Submit but didn't see a confirmation. Check C:\\shots\\x.png",
+    "ask: Fri 05 Feb: clicked Submit but saw no confirmation, so the request may have gone. It stays marked as requested and won't be sent again: check for Facilities' email, and if it didn't go through, book it by hand (--force).",
     "ask: Sat 06 Feb: Travel block says EV but work plan says nothing set. Book EV?",
     "ask: Mon 15 Feb: Travel block says EV but work plan says nothing set. Book EV?",
     "ask: Tue 16 Feb: Travel block says EV but work plan says timeOff, unknown. Book EV?"
@@ -167922,7 +167922,7 @@
    "booked_calls": [
     "2027-02-05"
    ],
-   "state": "{\r\n  \"2027-02-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:05\"\r\n  },\r\n  \"2027-02-11\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:07\"\r\n  },\r\n  \"2027-02-21\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:02\"\r\n  },\r\n  \"2027-02-27\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:00\"\r\n  }\r\n}",
+   "state": "{\r\n  \"2027-02-05\": {\r\n    \"start\": \"07:30\",\r\n    \"submitted\": \"2027-02-03T08:01:38\"\r\n  },\r\n  \"2027-02-08\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:05\"\r\n  },\r\n  \"2027-02-11\": {\r\n    \"approved\": \"  Spaced (Bay 3)  \",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:07\"\r\n  },\r\n  \"2027-02-21\": {\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:02\"\r\n  },\r\n  \"2027-02-27\": {\r\n    \"approved\": \"No brackets\",\r\n    \"start\": \"08:00\",\r\n    \"submitted\": \"2027-02-03T08:00:00\"\r\n  }\r\n}",
    "summary": "0 booked, 1 failed, 4 question(s)"
   }
  },

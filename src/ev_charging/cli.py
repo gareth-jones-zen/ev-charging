@@ -135,6 +135,9 @@ def _submit(config: cfg.Config, day: dt.date, start: str, headless: bool) -> str
     except BaseException:
         _undo(config, day, before)
         raise
+    if outcome.startswith(form.UNCONFIRMED):   # it may have gone: keep the record, so it's never sent twice
+        return (outcome + " It stays marked as requested, so the daily run won't send it again; "
+                "if it didn't go through, book it again with --force.")
     if not outcome.startswith("Submitted"):
         _undo(config, day, before)
     return outcome

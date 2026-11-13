@@ -162,7 +162,7 @@ public sealed class FixedBugTests : IDisposable
             report = Run(Outlook(), (_, _) =>
             {
                 held ??= Hold();
-                return "Clicked Submit but didn't see a confirmation.";
+                return "Not submitted: the form didn't load.";
             });
         }
         finally
@@ -181,11 +181,18 @@ public sealed class FixedBugTests : IDisposable
         var (code, _, _) = Cli((settings, day, _, _, _, _) =>
         {
             seen.Add(State.Load(settings.StateFile).ContainsKey(PyTime.Iso(day)));
-            return "Clicked Submit but didn't see a confirmation.";
+            return "Not submitted: the form didn't load.";
         }, "book", "2026-11-26", "--submit");
         Assert.Equal(1, code);
         Assert.Equal([true], seen);
         Assert.False(State.Load(Config.StateFile).ContainsKey("2026-11-26"));
+        // Clicked Submit with no confirmation: it may have gone, so the record stays (GJ, 13 Nov 2026).
+        string output;
+        (code, output, _) = Cli((_, _, _, _, _, _) => $"{Form.Unconfirmed}. Check x.png", "book", "2026-11-26", "--submit");
+        Assert.Equal(1, code);
+        Assert.True(State.Load(Config.StateFile).ContainsKey("2026-11-26"));
+        Assert.Contains("won't send it again", output, StringComparison.Ordinal);
+        State.Save(Config.StateFile, []);
         (code, _, _) = Cli((_, _, _, _, _, _) => "Submitted: Thu 26 Nov 2026, 08:00.", "book", "2026-11-26", "--submit");
         Assert.Equal(0, code);
         Assert.Equal("08:00", (string)State.Load(Config.StateFile)["2026-11-26"]!["start"]!);
