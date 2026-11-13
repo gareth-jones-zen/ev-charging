@@ -169,6 +169,7 @@ public static class Form
             }
             await page.WaitAsync(1000).ConfigureAwait(false);
             var shot = Path.Combine(settings.Screenshots, $"{PyTime.Iso(day)}-{(submit ? "submitted" : "preview")}.png");
+            await page.ScrollToTopAsync().ConfigureAwait(false);   // so the date and time are in the shot
             await page.ScreenshotAsync(shot).ConfigureAwait(false);
             if (!submit)
                 return $"Preview only, nothing submitted: {shot}";

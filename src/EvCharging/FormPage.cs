@@ -171,6 +171,16 @@ public sealed class FormPage
             }, page.SessionId).ConfigureAwait(false);
     }
 
+    /// <summary>Scroll the page, and anything scrolled inside it, back to the top. Forms scrolls inside its own panel, so a
+    /// "full page" screenshot is only what's in view; without this a preview showed the last field filled, not the date
+    /// and time (13 Nov 2026).</summary>
+    public async Task ScrollToTopAsync()
+    {
+        await Eval("(() => { window.scrollTo(0, 0); for (const e of document.querySelectorAll('*')) if (e.scrollTop > 0) e.scrollTop = 0; return true; })()")
+            .ConfigureAwait(false);
+        await Task.Delay(300).ConfigureAwait(false);
+    }
+
     /// <summary>locator.get_attribute(name): null if the element or the attribute isn't there.</summary>
     public async Task<string?> AttributeAsync(string element, string name)
     {
