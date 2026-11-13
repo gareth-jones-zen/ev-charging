@@ -23,7 +23,10 @@ static JsonNode Read(string path) => JsonNode.Parse(File.ReadAllText(path, Encod
 
 static int Show(string what, (int Compared, List<string> Differences) result)
 {
-    Console.WriteLine($"{what}: {result.Compared} compared, {result.Differences.Count} different");
+    var cases = result.Differences.Select(d => d.Split(':')[0]).Distinct().ToList();
+    Console.WriteLine($"{what}: {result.Compared} compared, {cases.Count} different ({result.Differences.Count} fields)");
+    if (cases.Count > 0)
+        Console.WriteLine($"  cases: {string.Join(' ', cases)}");
     foreach (var line in result.Differences.Take(20))
         Console.WriteLine($"  {line}");
     return result.Differences.Count == 0 ? 0 : 1;

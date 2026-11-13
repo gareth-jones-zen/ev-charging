@@ -111,3 +111,45 @@ The form is filled through background-tools-lib's EdgeDevTools (Edge over its De
   not Microsoft's current page.
 - **A real submission is a request to Facilities**: it is never made overnight, and phase 5 is GJ's.
 - **Python drift:** the goldens record v0.1.0; regenerate them if the Python changes.
+
+## Status (13 Nov 2026, morning): phases 1 to 4 done, live check pending
+
+Resumed at 07:25 after a Windows Update restart killed the first agent at 02:27 (the port was uncommitted then).
+
+- **Built:** `ev-charging.exe` and `ev-charging-background.exe`, Native AOT, about 11 MB each, no AOT warnings.
+  CI (`.github/workflows/build.yml`) builds, runs the tests (the mock-form tests in a real headless Edge), publishes
+  both exes and runs the AOT parity runner on the goldens.
+- **Tests (45):** the 28 Python tests by name; the 400 oracle scenarios; 876 settings, template, rename, URL, body
+  text, label, hook and status goldens; argparse's 24 texts and exit codes; door and lock tests; six tests filling the
+  local mock form over DevTools (every field kind, the picker quirk, trusted input only, preview, a refusing door, a
+  changed form, a missing option, a busy profile).
+- **Parity through the AOT runner (`tests/parity/Program.cs`):** the goldens, and generated scenarios from the oracle
+  (see the commit messages and the report for the counts).
+- **The form:** proven against the local mock only. **The real Forms URL has never been opened** and nothing was
+  submitted. Phase 5 (GJ at the console) is the first time the real form is filled by the .NET exe.
+
+### Deliberate differences
+
+| # | Python | .NET |
+|---|---|---|
+| 1 | An invalid pattern is refused with sre's wording | The same refusal, with PyRegex's wording after "isn't a valid regular expression:" |
+| 2 | Headless, a Microsoft page needing a person waits 5 minutes | Stops at once with a FormError (decision 4) |
+| 3 | No profile lock: a run and a transcript fetch can collide | `edge-profile-{key}`, waits up to 10 minutes (decision 5) |
+| 4 | An option not in the list: Playwright's TimeoutError after 30 s (a traceback from `book`) | A FormError naming the option; two matches is a FormError (Playwright's strict mode) |
+| 5 | A car file that isn't a JSON object fails later (AttributeError, escaping the run) | A FormError when it's read, so the booking fails and is raised as a question |
+| 6 | A car file's non-text `start_time` is stored as it is | Stored as Python prints it (text) |
+| 7 | `book` takes any `date.fromisoformat` form | `YYYY-MM-DD` only |
+| 8 | Anything unexpected: a traceback, exit 1 | `Type: message`, exit 1 |
+| 9 | Templates and `[approvals]` types fail mid-run | Refused when the settings load (decisions 6 and 7) |
+| 10 | The state file's swap (`os.replace`) fails at once on a transient access denied | Retried up to 5 times; the bytes written are the same |
+
+### Python bugs found (carried for parity, GJ's to fix)
+
+- **A sign-in failure during planning is reported as "couldn't read your calendar"**, never "needs a sign-in":
+  `plan()` wraps every exception in CalendarError, so `_run`'s SignInNeeded branch is unreachable for it.
+- **`record_submission` is outside `_book`'s try.** If the state file can't be replaced after a request was
+  submitted (seen as a transient PermissionError from `os.replace`, 2 in 10,000 oracle runs, most likely antivirus
+  on the temp file), the run fails and the day isn't recorded, so the next run requests it again.
+- **`apply_approvals` returns early on any error**, so approvals already read in that run aren't saved (renames
+  already made stay).
+- **A car file that's a JSON list** crashes the whole run (AttributeError in `start_time`, outside the try).

@@ -34,7 +34,20 @@ public static class State
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
         var temp = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(path))!, $"{Path.GetFileName(path)}.{Environment.ProcessId}.tmp");
         PyStr.WriteText(temp, PyJson.Dump(state, indent: 2, ensureAscii: true, sortKeys: true));
-        File.Move(temp, path, overwrite: true);
+        // Deliberately unlike Python, the swap is retried: a scanner can hold the new file for a moment (access
+        // denied), and a request submitted but not recorded would be requested again by the next run.
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                File.Move(temp, path, overwrite: true);
+                return;
+            }
+            catch (Exception error) when (error is UnauthorizedAccessException or IOException && attempt < 5)
+            {
+                Thread.Sleep(200 * attempt);
+            }
+        }
     }
 
     /// <summary>The bytes Save would write.</summary>
