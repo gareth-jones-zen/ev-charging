@@ -499,8 +499,9 @@ class FixedBugTests(Base):
             return "Submitted"
         report = run.run(self.config, self.outlook(), today=TODAY, log=self.log, booker=booker)
         self.assertEqual(report["failed"], ["2026-11-16", "2026-11-24"])
-        self.assertTrue(report["questions"][0].startswith(
-            f"Mon 16 Nov: booking FAILED. FormError: The car details at {self.config.car_file} aren't"))
+        self.assertTrue(report["questions"][0].startswith("Mon 16 Nov: booking FAILED. FormError: The car details at "))
+        self.assertIn(f"book Mon 16 Nov: FormError: The car details at {self.config.car_file} aren't a JSON object of "
+                      "names and values.", self.lines)   # in full; the question is cut at 120 characters
         self.assertEqual(state.load(self.config.state_file), {})
 
     # 5. book --submit didn't take the run lock, so it could overlap the scheduled run.
