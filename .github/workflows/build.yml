@@ -30,7 +30,7 @@ jobs:
         run: |
           dotnet publish src/EvCharging.Console -c Release -r win-x64 -o out
           dotnet publish src/EvCharging.Background -c Release -r win-x64 -o out
-          dotnet publish tests/Parity -c Release -r win-x64 -o parity-out
+          dotnet publish tests/parity -c Release -r win-x64 -o parity-out
           parity-out/ev-charging-parity.exe scenarios tests/parity/golden/scenarios.json
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           parity-out/ev-charging-parity.exe misc tests/parity/golden/misc.json
