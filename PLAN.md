@@ -123,8 +123,19 @@ Resumed at 07:25 after a Windows Update restart killed the first agent at 02:27 
   text, label, hook and status goldens; argparse's 24 texts and exit codes; door and lock tests; six tests filling the
   local mock form over DevTools (every field kind, the picker quirk, trusted input only, preview, a refusing door, a
   changed form, a missing option, a busy profile).
-- **Parity through the AOT runner (`tests/parity/Program.cs`):** the goldens, and generated scenarios from the oracle
-  (see the commit messages and the report for the counts).
+- **Parity through the AOT runner (`tests/parity/Program.cs`, `ev-charging-parity.exe`):**
+  - goldens: 400 of 400 scenarios, 876 of 876 misc, 24 of 24 CLI (3 invalid-pattern messages worded differently, row 1
+    below);
+  - **20,000 generated scenarios** (seeds 20261113 and 777): all identical. Ten failed at first only because the
+    *oracle's* `os.replace` hit a transient access denied (antivirus on the temp files); rerun in Python, all ten match.
+    The same transient failure hit .NET's swap too, until the retry (row 10);
+  - `status` on a copy of the real state file: byte-identical with Python's;
+  - lock names for GJ's settings: the run lock is Python's (`ev-charging-run-…`), and the profile lock is the same
+    for this tool's spelling of `m365-edge-profile` and teams-transcripts'.
+- **Live, read-only:** deferred while Microsoft's partial outage lasts (Graph 502 on the work plan and calendar views
+  from 08:00 to 08:20, and the live Python run failed the same way at 07:19 and 08:01). `tests/parity` has what's
+  needed: `ev-charging-parity record` (GETs through the fence on a cache copy), `oracle.py replay` and
+  `ev-charging-parity replay`, then `run --dry-run` from both command lines on settings copies.
 - **The form:** proven against the local mock only. **The real Forms URL has never been opened** and nothing was
   submitted. Phase 5 (GJ at the console) is the first time the real form is filled by the .NET exe.
 
