@@ -1,0 +1,90 @@
+name: release
+
+# Push a tag such as v1.0.0. A tag with a hyphen (v1.1.0-rc.1) becomes a pre-release.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write        # create the release
+  id-token: write        # sign the provenance attestation
+  attestations: write
+
+# The shared libraries come from background-tools-lib, checked out beside this repo as the build expects (see build.yml).
+env:
+  BACKGROUND_TOOLS_LIB_REF: 96f58c94c126957e194120891774b20d81dfebd4   # pinned: a release builds against one known library commit; bump deliberately
+
+jobs:
+  release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: ev-charging
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: ev-charging
+
+      - uses: actions/checkout@v5
+        with:
+          repository: gareth-jones-zen/background-tools-lib
+          ref: ${{ env.BACKGROUND_TOOLS_LIB_REF }}
+          path: background-tools-lib
+
+      - name: Library commit
+        shell: pwsh
+        run: git -C ../background-tools-lib log -1 --format='background-tools-lib %H %s'
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: ev-charging/global.json
+
+      - name: Version from the tag
+        id: version
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "prerelease=$($version.Contains('-'))" >> $env:GITHUB_OUTPUT
+
+      - name: Test
+        run: dotnet test -c Release
+
+      - name: Publish (Native AOT, win-x64)
+        shell: pwsh
+        run: |
+          $v = '${{ steps.version.outputs.version }}'
+          dotnet publish src/EvCharging.Console -c Release -r win-x64 -o publish -p:Version=$v
+          dotnet publish src/EvCharging.Background -c Release -r win-x64 -o publish -p:Version=$v
+          & ./publish/ev-charging.exe --version
+
+      - name: Package
+        shell: pwsh
+        run: |
+          $name = "ev-charging-${{ steps.version.outputs.version }}-win-x64"
+          New-Item -ItemType Directory -Path dist, "stage/$name" | Out-Null
+          Copy-Item publish/ev-charging.exe, publish/ev-charging-background.exe, README.md "stage/$name/"
+          Compress-Archive -Path "stage/$name/*" -DestinationPath "dist/$name.zip"
+          Copy-Item publish/ev-charging.exe, publish/ev-charging-background.exe dist/
+          # LF line endings, so `sha256sum -c` works as well as Get-FileHash
+          $sums = Get-ChildItem dist -File | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
+          }
+          [IO.File]::WriteAllText("$PWD/dist/SHA256SUMS.txt", (($sums -join "`n") + "`n"))
+          Get-Content dist/SHA256SUMS.txt
+
+      - name: Provenance attestation
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            ev-charging/dist/*.zip
+            ev-charging/dist/*.exe
+
+      - name: Create the release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $flags = @('--generate-notes', '--title', "ev-charging ${{ steps.version.outputs.version }}")
+          if ('${{ steps.version.outputs.prerelease }}' -eq 'True') { $flags += '--prerelease' }
+          gh release create '${{ github.ref_name }}' dist/*.zip dist/*.exe dist/SHA256SUMS.txt @flags

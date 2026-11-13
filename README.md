@@ -31,13 +31,14 @@ With `work_plan = ""` the work plan isn't read, and every day whose entry asks i
 
 ## Install
 
-Needs Windows, Python 3.11+ and Microsoft Edge.
+Windows (x64) with Microsoft Edge, which Windows has; nothing else.
 
-```
-pipx install --preinstall git+https://github.com/gareth-jones-zen/m365-graph --preinstall git+https://github.com/gareth-jones-zen/win-background git+https://github.com/gareth-jones-zen/ev-charging
-```
+1. Download `ev-charging-<version>-win-x64.zip` from [Releases](https://github.com/gareth-jones-zen/ev-charging/releases).
+2. Unzip it to a folder that will stay put, such as `%LOCALAPPDATA%\Programs\ev-charging`. The scheduled task (`autostart`) runs the program from there.
+3. Run the commands below from that folder, or add it to your `PATH`.
 
-[m365-graph](https://github.com/gareth-jones-zen/m365-graph) does the Microsoft sign-in and Graph requests. [win-background](https://github.com/gareth-jones-zen/win-background) does the scheduled task, notifications, locks and the log. Neither is on PyPI, so both are installed first, from their repos. Playwright drives your installed Edge, so there's no browser to download.
+It holds two programs: `ev-charging.exe`, for a console, and `ev-charging-background.exe`, the same program with no
+window, which the daily task runs. It drives your installed Edge directly, so there's no browser to download.
 
 ## Getting started
 
@@ -103,7 +104,7 @@ log_file = "..."                        # optional
 car_file = "..."                        # optional: your car's details, outside any repo
 edge_profile = "..."                    # optional: the tool's Edge profile
 screenshots = "..."                     # optional: where form screenshots go
-after_run = ["python", "hook.py"]       # optional: run after each run, with a JSON report on stdin
+after_run = ["powershell", "-File", "hook.ps1"]   # optional: run after each run, with a JSON report on stdin
 daily_at = "09:00"                      # when autostart's daily run happens
 
 [booking]
@@ -186,13 +187,20 @@ A scheduled run notifies only when something needs you: questions, a sign-in nee
 - **State** (`state_file`): each requested day, when it was submitted and the charge point once approved. It's what stops a day being requested twice.
   - **A day is recorded just before its request is submitted**, and taken off again if the submission fails. So a state file that can't be written after a submission (a scanner or OneDrive holding it) can't lead to the day being requested again; if it can't be written beforehand, nothing is submitted and the run asks you. Writes are retried for a couple of seconds first.
   - If a failed submission can't be taken off again, the day stays marked as requested and the question says so: book it with `book --submit --force`.
+  - **If it clicked Submit but saw no confirmation, the request may have gone, so the day stays marked as requested** and the question asks you to check for the approval email. If it didn't go through, book it with `book --submit --force`.
 - **Log** (`log_file`): every decision, booking and rename.
-- **Screenshots** (`screenshots`): the form as filled in, for each preview and submission, and after a Submit that didn't confirm.
+- **Screenshots** (`screenshots`): the form as filled in (from the top, so the date and time show), for each preview and submission, and after a Submit that didn't confirm.
 
-## Tests
+## Building
+
+It's .NET 11, published as Native AOT. It needs [background-tools-lib](https://github.com/gareth-jones-zen/background-tools-lib)
+checked out beside this repository (or set the `BackgroundToolsLib` property to a checkout elsewhere), then:
 
 ```
-python -m unittest discover -s tests
+dotnet test -c Release
+dotnet publish src/EvCharging.Console -c Release -r win-x64 -o out
+dotnet publish src/EvCharging.Background -c Release -r win-x64 -o out
 ```
 
-No network or browser: the calendar, mail and form are fakes.
+The tests need no network: the calendar and mail are fakes, and the form tests fill a local stand-in in a headless
+Edge. A tag `v*` builds and publishes a release.
