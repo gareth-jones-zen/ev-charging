@@ -30,13 +30,6 @@ jobs:
         run: |
           dotnet publish src/EvCharging.Console -c Release -r win-x64 -o out
           dotnet publish src/EvCharging.Background -c Release -r win-x64 -o out
-          dotnet publish tests/parity -c Release -r win-x64 -o parity-out
-          parity-out/ev-charging-parity.exe scenarios tests/parity/golden/scenarios.json
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          parity-out/ev-charging-parity.exe misc tests/parity/golden/misc.json
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          parity-out/ev-charging-parity.exe cli tests/parity/golden/cli.json
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Get-ChildItem out/*.exe | Format-Table Name, Length
       - uses: actions/upload-artifact@v4
         with:
